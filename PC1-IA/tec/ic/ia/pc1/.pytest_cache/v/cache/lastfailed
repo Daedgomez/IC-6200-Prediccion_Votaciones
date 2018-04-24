@@ -1,0 +1,8 @@
+{
+  "g0x.py::test_geberar_muestra_provincia": true, 
+  "g0x.py::test_open_file_CSV": true, 
+  "test_g09.py": true, 
+  "tests/test_g0x.py::test_generar_muestra": true, 
+  "tests/test_g0x.py::test_generar_muestra_provincia": true, 
+  "tests/test_g0x.py::test_inc": true
+}

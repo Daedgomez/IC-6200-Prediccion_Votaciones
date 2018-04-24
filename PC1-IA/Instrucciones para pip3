@@ -1,0 +1,31 @@
+
+
+1. Instalar el modulo con pip3
+En la carpeta donde se ubica este archivo actualmente, ejecutar "pip3 install ."
+
+
+2.Abrir python3 e  Importar en python 
+
+from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
+
+3. Llamar las funciones por ejemplo Una muestra de pais con n=5
+
+generar_muestra_pais(5)
+---------------------------------------------------------------------------------------------
+
+Se deben tener instalado
+
+1. pip esta instalado por defecto en las versiones >= 3, solamente se debe actualizar con
+
+pip3 install -U pip
+
+
+sino esta entonces
+
+
+sudo apt install python3-pip
+
+
+2. Intalar
+
+sudo apt-get install python3-setuptools
