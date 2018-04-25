@@ -332,9 +332,9 @@ def generar_poblacion():
                 individuo.append(reg[0])    #Partido
                 individuo.append(reg[2])    #Provincia
                 individuo.append(reg[3])    #Canton
-                individuo.append(reg[4])    #Poblacion
-                individuo.append(reg[5])    #Superficie
-                individuo.append(reg[6])    #Densidad
+                individuo.append(int(float(reg[4])))    #Poblacion
+                individuo.append(float(reg[5]))    #Superficie
+                individuo.append(float(reg[6]))    #Densidad
                 individuo.append(generar_localidad(int(float(reg[7]))))    
                 sexo = generar_sexo(int(float(reg[8])) 
                         * 100 / (int(float(reg[8])) + 100))
@@ -342,12 +342,12 @@ def generar_poblacion():
                     hombre = 1
                 individuo.append(sexo)
                 individuo.append(generar_edad())
-                individuo.append(reg[9])    #Viviendas individuales ocupadas
-                individuo.append(reg[10])    #Promedio de ocupantes por vivienda
+                individuo.append(int(float(reg[9])))    #Viviendas individuales ocupadas
+                individuo.append(float(reg[10]))    #Promedio de ocupantes por vivienda
                 individuo.append(generar_estado_vivienda(int(float(reg[11]))))
                 individuo.append(generar_hacinamiento(int(float(reg[12]))))    
                 individuo.append(generar_alfabetismo(int(float(reg[13]))))
-                individuo.append(reg[14])    #Escolaridad promedio
+                individuo.append(float(reg[14]))    #Escolaridad promedio
                 individuo.append(generar_asistencia_educacion(int(float(reg[15]))))    
                 if(hombre):
                     individuo.append(generar_fuerza_trabajo(int(float(reg[16]))))
