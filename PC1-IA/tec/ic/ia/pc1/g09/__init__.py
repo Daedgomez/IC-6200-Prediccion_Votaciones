@@ -329,7 +329,6 @@ def generar_poblacion():
             for x in range (int(reg[1])):
                 hombre = 0
                 individuo = []
-                individuo.append(reg[0])    #Partido
                 individuo.append(reg[2])    #Provincia
                 individuo.append(reg[3])    #Canton
                 individuo.append(int(float(reg[4])))    #Poblacion
@@ -359,6 +358,7 @@ def generar_poblacion():
                 individuo.append(generar_asegurado(int(float(reg[21]))))
                 individuo.append(generar_jefatura_femenina(int(float(reg[22]))))
                 individuo.append(generar_jefatura_compartida(int(float(reg[23]))))
+                individuo.append(reg[0]) #Partido
                 if(reg[0] == "ACCION CIUDADANA" or reg[0] == "RESTAURACION NACIONAL"):
                     individuo.append(reg[0])
                 else:
