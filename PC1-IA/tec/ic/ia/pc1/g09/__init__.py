@@ -296,29 +296,30 @@ def generar_voto_2_ronda(pac,rn,nulos):
 Genera la poblacion total de la cual se generaran las muestras por pais y provincia.
 Crea un individuo por cada voto recibido y toma en cuenta los indicadores cantonales.
 La lista individuo contiene en los indices los siguientes datos:
-0. Partido por el cual el individuo voto.
-1. Provincia donde voto.
-2. Canton donde voto.
-3. Poblacion del canton.
-4. Superficie del canton.
-5. Densidad del canton.
-6. Tipo de localidad (Urbano, Rural).
-7. Sexo.
-8. Edad.
-9. Viviendas individuales ocupadas.
-10. Promedio de ocupantes por vivienda.
-11. Estado de la vivienda (Bueno, Malo).
-12. Viviendas de vivienda con respecto a los habitantes (Hacinamiento).
-13. Alfabetismo.
-14. Escolaridad promedio.
-15. Asistencia a la educacion regular.
-16. Tasa de participacion (En fuerza de trabajo).
-17. Seguro laboral (Trabaja con o sin seguro).
-18. Persona nacional o extranjera.
-19. Persona discapacitada.
-20. Persona asegurada.
-21. Hogar con jefatura femenina.
-22. Hogar con jefatura compartida.
+ 
+0. Provincia donde voto.
+1. Canton donde voto.
+2. Poblacion del canton.
+3. Superficie del canton.
+4. Densidad del canton.
+5. Tipo de localidad (Urbano, Rural).
+6. Sexo.
+7. Edad.
+8. Viviendas individuales ocupadas.
+9. Promedio de ocupantes por vivienda.
+10. Estado de la vivienda (Bueno, Malo).
+11. Viviendas de vivienda con respecto a los habitantes (Hacinamiento).
+12. Alfabetismo.
+13. Escolaridad promedio.
+14. Asistencia a la educacion regular.
+15. Tasa de participacion (En fuerza de trabajo).
+16. Seguro laboral (Trabaja con o sin seguro).
+17. Persona nacional o extranjera.
+18. Persona discapacitada.
+19. Persona asegurada.
+20. Hogar con jefatura femenina.
+21. Hogar con jefatura compartida.
+22. Partido por el cual el individuo voto.
 23. Voto segunda ronda.
 """
 
