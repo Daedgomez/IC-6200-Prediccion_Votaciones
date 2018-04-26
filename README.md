@@ -9,3 +9,20 @@ https://es.wikipedia.org/wiki/%C3%81rbol_kd
 https://medium.com/the-renaissance-developer/learning-tree-data-structure-27c6bb363051
 http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.43.3453&rep=rep1&type=pdf
 https://github.com/tsoding/kdtree-in-python
+
+
+Referencias de SVM
+https://www.analyticsvidhya.com/blog/2017/09/understaing-support-vector-machine-example-code/
+https://jakevdp.github.io/PythonDataScienceHandbook/05.07-support-vector-machines.html
+http://scikit-learn.org/stable/modules/svm.html
+
+
+
+
+Comandos de instalacion
+pip3 install scipy
+sudo pip3 install numpy scipy
+pip3 install -U scikit-learn
+pip3 install matplotlib
+
+
