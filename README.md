@@ -15,6 +15,7 @@ Referencias de SVM
 https://www.analyticsvidhya.com/blog/2017/09/understaing-support-vector-machine-example-code/
 https://jakevdp.github.io/PythonDataScienceHandbook/05.07-support-vector-machines.html
 http://scikit-learn.org/stable/modules/svm.html
+http://dataaspirant.com/2017/01/25/svm-classifier-implemenation-python-scikit-learn/
 
 
 
