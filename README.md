@@ -18,12 +18,15 @@ http://scikit-learn.org/stable/modules/svm.html
 http://dataaspirant.com/2017/01/25/svm-classifier-implemenation-python-scikit-learn/
 
 
-
+Referencias de RL
+https://serrate.net/2018/02/18/logistic-regression-with-tensorflow/
+https://www.kaggle.com/niyamatalmass/logistic-regression-in-tensorflow-for-beginner
 
 Comandos de instalacion
 pip3 install scipy
 sudo pip3 install numpy scipy
 pip3 install -U scikit-learn
 pip3 install matplotlib
+pip3 install tensorflow
 
 
