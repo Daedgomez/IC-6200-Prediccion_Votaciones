@@ -32,3 +32,6 @@ pip3 install tensorflow
 Comandos de ejecucion
 puthon3 main.py
 predecir --prefijo knnp1 --poblacion 800 --porcentaje-pruebas 20 --knn --k 5
+predecir --prefijo svmp1 --poblacion 1000 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear
+
+
