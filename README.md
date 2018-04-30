@@ -29,4 +29,6 @@ pip3 install -U scikit-learn
 pip3 install matplotlib
 pip3 install tensorflow
 
-
+Comandos de ejecucion
+puthon3 main.py
+predecir --prefijo knnp1 --poblacion 800 --porcentaje-pruebas 20 --knn --k 5
