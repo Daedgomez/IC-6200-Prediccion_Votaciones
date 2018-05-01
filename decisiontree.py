@@ -9,59 +9,68 @@ political_parties_list=["ACCESIBILIDAD SIN EXCLUSION", "ACCION CIUDADANA", "ALIA
 
 #Calc the order of the attributes for to do the decision tree
 def calc_decision_tree(sample_data):
-	if (calc_info_gain(sample_data, [])) == True:
+	if (calc_info_gain(sample_data, 22)) == True:
 		print("Realización del árbol de decisión con éxito")
+	else:
+		print("ERROR")
 	return 0
 
 #Calc the entropy of the attributes
-def calc_info_gain(sample_data, result_list):
+def calc_info_gain(sample_data, round_number):
 
-	#if len(sample_data) == 0:
-	#	print("Realización de la ejecución del programa con éxito")
-	#else:		
+	if len(sample_data) == 0:
+		print("Realización de la ejecución del programa con éxito")
+	else:		
 		print("Estos son los datos de muestra")
 		print("")
 		print(sample_data)
 		print("")
-
-		#class_type = 22 #Type of the class of the attribute to be analized
-		#class_list = calc_class_data(class_type, sample_data) #List of the classes
-		round_number = 22
+		
 		class_list = calc_class_data(round_number,sample_data)
 		information_gain_list =[]
 		class_entropy_num = class_entropy(round_number, sample_data)
-		
+		position = 0
 		for i in range(len(sample_data)-2):
 			attrib_value_list = calc_class_data(i, sample_data)
-			info_gain = class_entropy(round_number, sample_data)
-			attrib_value_entropy_list = calc_attrib_value_entropy(j, attrib_value_list[j],sample_data, class_list, round_number)
-			info_gain = class_entropy(round_number, sample_data)
+			info_gain = class_entropy_num
+			attrib_value_entropy_list = []
 			for j in range(len(attrib_value_list)):
-				info_gain = info_gain * (calc_class_data())
+				attrib_value_entropy_list.append(calc_attrib_value_entropy(j, attrib_value_list[j],sample_data,
+					class_list, round_number))
+			for k in range(len(attrib_value_entropy_list)):
+				factor = factor + (calc_class_data(i, attrib_value_list[j]) * attrib_value_entropy_list[k])
+			info_gain = info_gain - factor
+			information_gain_list.append(info_gain)
+		for l in range(len(information_gain_list)):
+			major_element = information_gain_list[l]
+			if (information_gain_list[l]) >= major_element:
+				major_element = information_gain_list[l]
+				position = l
+		return calc_info_gain(sample_data[position].pop(l),round_number)
 
 
 
 def calc_attrib_value_found(attribute_value_position,sample_data,round_number):
 	count = 0
-	for i in range(sample_data):
+	for i in range(len(sample_data)):
 		if sample_data[i][attribute_value_position] == sample_data[i][round_number]:
 			count = count + 1
 	return count
 
 def calc_attrib_value_prob(attribute_value_position,attrib_value,sample_data,round_number,):
-	probabability = calc_attrib_value_found(attribute_value_position, sample_data,round_number) / 
-					found_count_in_list(attrib_value, sample_data,attribute_value_position)
+	probabability = calc_attrib_value_found(attribute_value_position, sample_data,round_number)/found_count_in_list(attrib_value, sample_data,attribute_value_position)
 	return probabability
 
 def calc_attrib_value_entropy(attribute_value_position, attrib_value,sample_data, class_list, round_number):
 	attrib_value_prob_list = [] #List of the probabilities of the every class
+	entropy = 0.0
 	for i in range(len(sample_data)):
 		for j in range(len(class_list)):
-			attrib_value_prob_list.append(calc_attrib_value_prob(attribute_value_position, attrib_value,sample_data, class_list[j], round_number))
-		print("Value " + attrib_value + " " + str(attrib_value_prob_list[i])
+			attrib_value_prob_list.append(calc_attrib_value_prob(attribute_value_position, attrib_value,sample_data, round_number))
+		print("Value " + attrib_value + " " + str(attrib_value_prob_list[i]))
 	base = 2.0
 	for i in range(len(class_list)):
-		entropy = entropy - (attrib_value_prob_list[i] * (math.log(base,attrib_value_prob_list[i])))
+		entropy = entropy - (attrib_value_prob_list[i] * (math.log(base,(attrib_value_prob_list[i]))))
 	print("Entropy of the value " + str(attribute_value) + "= " + str(entropy))
 
 
@@ -76,13 +85,14 @@ def probability_in_list(element, list, position):
 def class_entropy(round_number, sample_data):
 	probabilistic_class_list = [] #List of the probabilities of the every class
 	class_list = calc_class_data(round_number, sample_data)
+	entropy = 0.0
 	for i in range(len(class_list)):
 		probabilistic_class_list.append(probability_in_list(class_list[i], sample_data, round_number))
 		print("Class " + class_list[i] + ": " + str(probabilistic_class_list[i]))
 	base = 2.0
 	for i in range(len(class_list)):
 		entropy = entropy - (probabilistic_class_list[i] * (math.log(base,probabilistic_class_list[i])))
-	print("Entropy of the class: " + str(class_type) + "= " + str(entropy))
+	print("Entropy of the class: " + str(i) + "= " + str(entropy))
 
 #Calculate the count of the elements in a list
 def found_count_in_list(element, list, position):
@@ -108,4 +118,4 @@ def calc_class_data(position, data_list):
 
 
 print("Iniciando el programa...")
-calc_decision_tree(generar_muestra_pais(1000))
+calc_decision_tree(generar_muestra_pais(5))
