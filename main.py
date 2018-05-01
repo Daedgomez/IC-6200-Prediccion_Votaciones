@@ -1,141 +1,120 @@
-import cmd #Para la linea de comandos
-import collections #Para encontrar la cantidad de veces que un elemento esta en una lista
-from statistics import mean #Para encontrar el promedio de una lista
-import csv #Para manejar archivos csv
-import copy #Para hacer deepcopy de variables
-import numpy as np
-from sklearn import svm
-from sklearn.preprocessing import OneHotEncoder
-import tensorflow as tf
-from numpy import argmax
 print("Creando poblacion de datos inicial...")
-from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
+import cmd # Para la linea de comandos
+# Para encontrar la cantidad de veces que un elemento esta en una lista
+import collections
+from statistics import mean # Para encontrar el promedio de una lista
+import csv # Para manejar archivos csv
+import copy # Para hacer deepcopy de variables
+import numpy as np # Para crear listas usadas en SVM y regresion lineal
+from sklearn import svm # Para crear el modelo de SVM
+# Para codificar vectores de manera binaria
+from sklearn.preprocessing import OneHotEncoder 
+import tensorflow as tf # Para crear el modelo de regresion lineal
+from numpy import argmax # Para decodificar vectores
+# Para generar la muestra de datos
+from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia 
 
+# Variables globales generales
+prefijo = "" # Prefijo para el archivo de salida
+poblacion = 100 # Tamanno de la muestra a generar
+# Division de poblacion para pruebas y para entrenamiento
+porcentaje_pruebas = 20 
+modelo = "" # Seleccion de modelo
+# knn
+k = 0 # Cantidad de vecinos cercanos a considerar
+# svm
+c = 0 # Parámetro de penalización del término de error.
+gamma = 0 # Coeficiente de Kernel para rbf, poly y sigmoid.
+kernel = "" # Kernel a utilizar
+# Regresion lineal
+l1 = 0 # Coeficiente de regularizacion l1
+l2 = 0 # Coeficiente de regularizacion l2
+# Red neuronal
+numero_capas = 0 # Cantidad de capas de la red neuronal
+unidades_por_capa = 0 # Cantidad de unidades por cada de la red neuronal
+funcion_activacion = 0 # Funcion de activacion de la red neuronal
+# Arbol de decision
+umbral_poda = 0 # Cantidad minima de ganancia para podar un nodo
 
-#Variables generales
-prefijo = ""
-poblacion = 0
-porcentaje_pruebas = 0
-modelo = ""
-#knn
-k = 0
-#svm
-c = 0
-gamma = 0
-kernel = ""
-#Regresion lineal
-l1 = 0
-l2 = 0
-#Red neuronal
-numero_capas = 0
-unidades_por_capa = 0
-funcion_activacion = 0
-#Arbo de decision
-umbral_poda = 0
-
-
+"""
+Entrada: lista es un arreglo con los datos a guardar.
+Restriccion: La lista de entrada no debe estar vacia.
+Genera un archivo csv con los datos de la lista de entrada.
+"""
 def generar_csv(lista):
-    myFile = open(prefijo+'_datos.csv', 'w')
+    myFile = open(prefijo + '_datos.csv', 'w')
     with myFile:
         writer = csv.writer(myFile)
         writer.writerows(lista)
 
-
+"""
+Se ejecuta despues de ingresar un comando, comprueba que tipo de modelo es.
+Crea una muestra, entrena el modelo seleccionado y luego prueba el modelo
+con datos de prueba, al final imprime los resultados de error y llama a la
+funcion que guarda los datos en el csv.
+"""
 def ejecutar():
     data = generar_muestra_pais(poblacion)
     xdata = copy.deepcopy(data)
     div = int(porcentaje_pruebas * poblacion / 100)
-    lista_r1 = []
-    lista_r2 = []
-    lista_r21 = []
-    j = 0
+    lista_r1, lista_r2, lista_r21, j = [], [], [], 0
     if(modelo=="knn"):
         lista_modelos = []
-        while(j<5):
-            knn = KNN(data[int(((poblacion-div)/5)*(j+1)):]+data[:int(((poblacion-div)/5)*j)])
-            test = data[int(((poblacion-div)/5)*j):int(((poblacion-div)/5)*(j+1))]
-            n = len(test)
-            i=0
-            correcto_r1 = 0
-            correcto_r2 = 0
-            correcto_r21 = 0
+        # 5-Cross validation
+        while(j < 5):
+            val = ((poblacion - div) / 5)
+            knn = KNN(data[int(val * (j + 1)):] + data[:int(val * j)])
+            test = data[int(val * j):int(val * (j + 1))]
+            i, correcto_r21, correcto_r2, correcto_r1, n = 0, 0, 0, 0, len(test)
             while(i<n):
-                dr1 = knn.find_KNN(test[i], k, "r1")
-                dr2 = knn.find_KNN(test[i], k, "r2")
-                dr21 = knn.find_KNN(test[i], k, "r21")
-                xdata[int(((poblacion-div)/5)*j)+i].append("Si")
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr1)
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr2)
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr21)
-                if (dr1 == test[i][22]):
-                    correcto_r1 += 1
-                if (dr2 == test[i][23]):
-                    correcto_r2 += 1
-                if (dr21 == test[i][23]):
-                    correcto_r21 += 1
-                i+=1
+                dr1 = knn.test(test[i], k, "r1")
+                dr2 = knn.test(test[i], k, "r2")
+                dr21 = knn.test(test[i], k, "r21")
+                xdata[int(val * j) + i] += ["Si", dr1, dr2, dr21]
+                correcto_r1 += 1 if dr1 == test[i][22] else 0 
+                correcto_r2 += 1 if dr2 == test[i][23] else 0
+                correcto_r21 += 1 if dr21 == test[i][23] else 0
+                i += 1
             lista_r1.append(correcto_r1)
             lista_r2.append(correcto_r2)
             lista_r21.append(correcto_r21)
-            j += 1
             lista_modelos.append(knn)
-            
+            j += 1
+        # Pruebas con el modelo entrenado
         i_r1 = lista_r1.index(max(lista_r1))
         i_r2 = lista_r2.index(max(lista_r2))
         i_r21 = lista_r21.index(max(lista_r21))
         promedio_r1 = mean(lista_r1)
         promedio_r2 = mean(lista_r2)
         promedio_r21 = mean(lista_r21)
-
-        test = data[poblacion-div:]
-        n = len(test)
-        i=0
-        correcto_r1 = 0
-        correcto_r2 = 0
-        correcto_r21 = 0
-        while(i<n):
-            xdata[poblacion-div+i].append("No")
-            dr1 = lista_modelos[i_r1].find_KNN(test[i], k, "r1")
-            dr2 = lista_modelos[i_r2].find_KNN(test[i], k, "r2")
-            dr21 = lista_modelos[i_r21].find_KNN(test[i], k, "r21")
-            xdata[poblacion-div+i].append(dr1)
-            xdata[poblacion-div+i].append(dr2)
-            xdata[poblacion-div+i].append(dr21)
-            if (dr1 == test[i][22]):
-                correcto_r1 += 1
-            if (dr2 == test[i][23]):
-                correcto_r2 += 1
-            if (dr21 == test[i][23]):
-                correcto_r21 += 1
-            i+=1
+        val = poblacion - div
+        test = data[val:]
+        i, correcto_r21, correcto_r2, correcto_r1, n = 0, 0, 0, 0, len(test)
+        while(i < n):
+            dr1 = lista_modelos[i_r1].test(test[i], k, "r1")
+            dr2 = lista_modelos[i_r2].test(test[i], k, "r2")
+            dr21 = lista_modelos[i_r21].test(test[i], k, "r21")
+            xdata[val + i] += ["No", dr1, dr2, dr21]
+            correcto_r1 += 1 if dr1 == test[i][22] else 0 
+            correcto_r2 += 1 if dr2 == test[i][23] else 0
+            correcto_r21 += 1 if dr21 == test[i][23] else 0
+            i += 1
     elif(modelo=="svm"):
-        lista_modelos_r1 = []
-        lista_modelos_r2 = []
-        lista_modelos_r21 = []
-        while(j<5):
-            svm1 = SVM(data[int(((poblacion-div)/5)*(j+1)):]+data[:int(((poblacion-div)/5)*j)],"r1",c,gamma,kernel)
-            svm2 = SVM(data[int(((poblacion-div)/5)*(j+1)):]+data[:int(((poblacion-div)/5)*j)],"r2",c,gamma,kernel)
-            svm21 = SVM(data[int(((poblacion-div)/5)*(j+1)):]+data[:int(((poblacion-div)/5)*j)],"r21",c,gamma,kernel)
-            test = data[int(((poblacion-div)/5)*j):int(((poblacion-div)/5)*(j+1))]
-            n = len(test)
-            i=0
-            correcto_r1 = 0
-            correcto_r2 = 0
-            correcto_r21 = 0
-            while(i<n):
-                dr1 = svm1.test([test[i]])
-                dr2 = svm2.test([test[i]])
-                dr21 = svm21.test([test[i]])
-                xdata[int(((poblacion-div)/5)*j)+i].append("Si")
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr1)
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr2)
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr21)
-                if (dr1 == test[i][22]):
-                    correcto_r1 += 1
-                if (dr2 == test[i][23]):
-                    correcto_r2 += 1
-                if (dr21 == test[i][23]):
-                    correcto_r21 += 1
+        lista_modelos_r21, lista_modelos_r2, lista_modelos_r1 = [], [], []
+        # 5-Cross validation
+        while(j < 5):
+            val = ((poblacion - div) / 5)
+            svm1 = SVM(data[int(val * (j + 1)):] + data[:int(val * j)], "r1", c, gamma, kernel)
+            svm2 = SVM(data[int(val * (j + 1)):] + data[:int(val * j)], "r2", c, gamma, kernel)
+            svm21 = SVM(data[int(val * (j + 1)):] + data[:int(val * j)], "r21", c, gamma, kernel)
+            test = data[int(val * j):int(val * (j + 1))]
+            i, correcto_r21, correcto_r2, correcto_r1, n = 0, 0, 0, 0, len(test)
+            while(i < n):
+                dr1, dr2, dr21 = svm1.test([test[i]]), svm2.test([test[i]]), svm21.test([test[i]])
+                xdata[int(val * j) + i] += ["Si", dr1, dr2, dr21]
+                correcto_r1 += 1 if dr1 == test[i][22] else 0 
+                correcto_r2 += 1 if dr2 == test[i][23] else 0
+                correcto_r21 += 1 if dr21 == test[i][23] else 0
                 i+=1
             lista_r1.append(correcto_r1)
             lista_r2.append(correcto_r2)
@@ -144,65 +123,44 @@ def ejecutar():
             lista_modelos_r2.append(svm2)
             lista_modelos_r21.append(svm21)
             j += 1
+        # Pruebas con el modelo entrenado
         i_r1 = lista_r1.index(max(lista_r1))
         i_r2 = lista_r2.index(max(lista_r2))
         i_r21 = lista_r21.index(max(lista_r21))
         promedio_r1 = mean(lista_r1)
         promedio_r2 = mean(lista_r2)
         promedio_r21 = mean(lista_r21)
-        test = data[poblacion-div:]
-        n = len(test)
-        i=0
-        correcto_r1 = 0
-        correcto_r2 = 0
-        correcto_r21 = 0
-        while(i<n):
+        val = poblacion - div
+        test = data[val:]
+        i, correcto_r21, correcto_r2, correcto_r1, n = 0, 0, 0, 0, len(test)
+        while(i < n):
             dr1 = lista_modelos_r1[i_r1].test([test[i]])
             dr2 = lista_modelos_r2[i_r2].test([test[i]])
             dr21 = lista_modelos_r21[i_r21].test([test[i]])
-            xdata[poblacion-div+i].append("No")
-            xdata[poblacion-div+i].append(dr1)
-            xdata[poblacion-div+i].append(dr2)
-            xdata[poblacion-div+i].append(dr21)
-            if (dr1 == test[i][22]):
-                correcto_r1 += 1
-            if (dr2 == test[i][23]):
-                correcto_r2 += 1
-            if (dr21 == test[i][23]):
-                correcto_r21 += 1
+            xdata[val + i] += ["No", dr1, dr2, dr21]
+            correcto_r1 += 1 if dr1 == test[i][22] else 0 
+            correcto_r2 += 1 if dr2 == test[i][23] else 0
+            correcto_r21 += 1 if dr21 == test[i][23] else 0
             i+=1
-
-
-
     elif(modelo=="rl"):
-        lista_modelos_r1 = []
-        lista_modelos_r2 = []
-        lista_modelos_r21 = []
-        while(j<5):
-            lr1 = LR(data[int(((poblacion-div)/5)*(j+1)):]+data[:int(((poblacion-div)/5)*j)],"r1",l1,l2)
-            lr2 = LR(data[int(((poblacion-div)/5)*(j+1)):]+data[:int(((poblacion-div)/5)*j)],"r2",l1,l2)
-            lr21 = LR(data[int(((poblacion-div)/5)*(j+1)):]+data[:int(((poblacion-div)/5)*j)],"r21",l1,l2)
-            test = data[int(((poblacion-div)/5)*j):int(((poblacion-div)/5)*(j+1))]
-            n = len(test)
-            i=0
-            correcto_r1 = 0
-            correcto_r2 = 0
-            correcto_r21 = 0
-            while(i<n):
+        lista_modelos_r21, lista_modelos_r2, lista_modelos_r1 = [], [], []
+        # 5-Cross validation
+        while(j < 5):
+            val = ((poblacion - div) / 5)
+            lr1 = LR(data[int(val * (j + 1)):] + data[:int(val * j)], "r1", l1, l2)
+            lr2 = LR(data[int(val * (j + 1)):] + data[:int(val * j)], "r2", l1, l2)
+            lr21 = LR(data[int(val * (j + 1)):] + data[:int(val * j)], "r21", l1, l2)
+            test = data[int(val * j):int(val * (j + 1))]
+            i, correcto_r21, correcto_r2, correcto_r1, n = 0, 0, 0, 0, len(test)
+            while(i < n):
                 dr1 = lr1.test([test[i]])
                 dr2 = lr2.test([test[i]])
                 dr21 = lr21.test([test[i]])
-                xdata[int(((poblacion-div)/5)*j)+i].append("Si")
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr1)
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr2)
-                xdata[int(((poblacion-div)/5)*j)+i].append(dr21)
-                if (dr1 == test[i][22]):
-                    correcto_r1 += 1
-                if (dr2 == test[i][23]):
-                    correcto_r2 += 1
-                if (dr21 == test[i][23]):
-                    correcto_r21 += 1
-                i+=1
+                xdata[int(val * j) + i] += ["Si", dr1, dr2, dr21]
+                correcto_r1 += 1 if dr1 == test[i][22] else 0 
+                correcto_r2 += 1 if dr2 == test[i][23] else 0
+                correcto_r21 += 1 if dr21 == test[i][23] else 0
+                i += 1
             lista_r1.append(correcto_r1)
             lista_r2.append(correcto_r2)
             lista_r21.append(correcto_r21)
@@ -210,64 +168,51 @@ def ejecutar():
             lista_modelos_r2.append(lr2)
             lista_modelos_r21.append(lr21)
             j += 1
+        # Pruebas con el modelo entrenado
         i_r1 = lista_r1.index(max(lista_r1))
         i_r2 = lista_r2.index(max(lista_r2))
         i_r21 = lista_r21.index(max(lista_r21))
         promedio_r1 = mean(lista_r1)
         promedio_r2 = mean(lista_r2)
         promedio_r21 = mean(lista_r21)
-        test = data[poblacion-div:]
-        n = len(test)
-        i=0
-        correcto_r1 = 0
-        correcto_r2 = 0
-        correcto_r21 = 0
-        while(i<n):
+        val = poblacion - div
+        test = data[val:]
+        i, correcto_r21, correcto_r2, correcto_r1, n = 0, 0, 0, 0, len(test)
+        while(i < n):
             dr1 = lista_modelos_r1[i_r1].test([test[i]])
             dr2 = lista_modelos_r2[i_r2].test([test[i]])
             dr21 = lista_modelos_r21[i_r21].test([test[i]])
-            xdata[poblacion-div+i].append("No")
-            xdata[poblacion-div+i].append(dr1)
-            xdata[poblacion-div+i].append(dr2)
-            xdata[poblacion-div+i].append(dr21)
-            if (dr1 == test[i][22]):
-                correcto_r1 += 1
-            if (dr2 == test[i][23]):
-                correcto_r2 += 1
-            if (dr21 == test[i][23]):
-                correcto_r21 += 1
-            i+=1
+            xdata[val + i] += ["No", dr1, dr2, dr21]
+            correcto_r1 += 1 if dr1 == test[i][22] else 0 
+            correcto_r2 += 1 if dr2 == test[i][23] else 0
+            correcto_r21 += 1 if dr21 == test[i][23] else 0
+            i += 1
 
-
-
-
-
-
-
-
-
-
-    print("%Error entrenamiento r1",100-promedio_r1*100/((poblacion-div)/5))
-    print("%Error entrenamiento r2",100-promedio_r2*100/((poblacion-div)/5))
-    print("%Error entrenamiento r21",100-promedio_r21*100/((poblacion-div)/5))
-    print("%Error prueba r1",100-correcto_r1*100/n)
-    print("%Error prueba r2",100-correcto_r2*100/n)
-    print("%Error prueba r21",100-correcto_r21*100/n)
+    print("%Error entrenamiento r1", 100 - promedio_r1 * 100 / ((poblacion - div) / 5))
+    print("%Error entrenamiento r2", 100 - promedio_r2 * 100 / ((poblacion - div) / 5))
+    print("%Error entrenamiento r21", 100 - promedio_r21 * 100 / ((poblacion - div) / 5))
+    print("%Error prueba r1", 100 - correcto_r1 * 100 / n)
+    print("%Error prueba r2", 100 - correcto_r2 * 100 / n)
+    print("%Error prueba r21", 100 - correcto_r21 * 100 / n)
     generar_csv(xdata)
 
+"""
+Clase que crea una linea de comandos para poder ejecutar los modelos
+"""
 class Comandos(cmd.Cmd):
     prompt = "Introduzca un comando: "
-    doc_header = "Comandos disponibles"
 
     def do_predecir(self, args):
         argumentos = args.split()
         try:
             global prefijo
             prefijo = argumentos[argumentos.index("--prefijo")+1]
-            global poblacion
-            poblacion = int(argumentos[argumentos.index("--poblacion")+1])
-            global porcentaje_pruebas
-            porcentaje_pruebas = int(argumentos[argumentos.index("--porcentaje-pruebas")+1])
+            if("--poblacion" in argumentos):
+                global poblacion
+                poblacion = int(argumentos[argumentos.index("--poblacion")+1])
+            if("--porcentaje-pruebas" in argumentos):
+                global porcentaje_pruebas
+                porcentaje_pruebas = int(argumentos[argumentos.index("--porcentaje-pruebas")+1])
             if("--svm" in argumentos):
                 global modelo
                 modelo = "svm"
@@ -303,10 +248,10 @@ class Comandos(cmd.Cmd):
                 l1 = float(argumentos[argumentos.index("--l1")+1])
                 global l2
                 l2 = float(argumentos[argumentos.index("--l2")+1])
+            ejecutar()
         except ValueError:
             print("Error en los argumentos")
-        ejecutar()
-
+        
     def do_salir(self, args):
         return(True)
 
@@ -316,27 +261,35 @@ class Comandos(cmd.Cmd):
     def emptyline(self):
         pass
 
-
-
+"""
+Clase del modelo KNN hecha con un arbol de k-dimensiones.
+Las dimensiones se refieren a la cantidad de atributos de los nodos,
+en este caso los nodos tienen 22 atributos, o sea el arbol sera de 22 dimensiones.
+El modelo se basa en crear el arbol con los datos de entrenamiento, y luego para probarlo
+se recorre el arbol comparando en cada dimension un atributo y midiendo la distancia con ese nodo,
+al final se escogen los k nodos con menor distancia y el resultado es el mas comun entre ellos.
+"""
 class KNN:
-    kdtree = None
-    max_data = []    
-    NN = []
-    r = ""
-    d = 0
-    
+    kdtree = None # Arbol binario donde se guardan los nodos
+    max_data = [] # Calculo del maximo de en los atributos continuos para normalizarlos
+    NN = [] # Vecinos mas cercanos
+    r = "" # Tipo de prediccion
+    d = 0 # Indice para medir la distancia 
+
+    # Constructor
     def __init__(self, data):
         self.find_all_max(data)
         self.kdtree = self.build_kdtree(data)
 
+    # Arbol binario
     class BinaryTree:
         def __init__(self, value):
             self.value = value
             self.left_child = None
             self.right_child = None
-            self.depth = None
 
-    def find_all_max(self,data):
+    # Encuentra los maximos en los datos continuos para normalizarlos
+    def find_all_max(self, data):
         max_poblacion = self.find_max(data, 2)
         max_superficie = self.find_max(data, 3)
         max_densidad = self.find_max(data, 4)
@@ -344,35 +297,40 @@ class KNN:
         max_viviendas = self.find_max(data, 8)
         max_ocupantes = self.find_max(data, 9)
         max_escolaridad = self.find_max(data, 13)
-        self.max_data = [0,0,max_poblacion,max_superficie,max_densidad,0,0,max_edad,max_viviendas,max_ocupantes,0,0,0,max_escolaridad]
+        self.max_data = [0, 0, max_poblacion, max_superficie, max_densidad, 0, 0,
+                         max_edad, max_viviendas, max_ocupantes, 0, 0, 0, max_escolaridad]
 
-    def find_KNN(self,value,k,r_):
+    # Prueba los datos
+    def test(self, value, k, r_):
         self.NN = []
         self.r = r_
-        if(self.r=="r21"):
+        if(self.r == "r21"):
             self.d = 1
         else:
             self.d = 0
         self.kdtree_closest_point(self.kdtree, value)
         return self.solve(k)
-        
-    def solve(self,k):
+
+    # Toma en cuenta los vecinos cercanos (NN) para ver
+    # cual es el resultado mas comun
+    def solve(self, k):
         s = sorted(self.NN, key=lambda x: x[1])
         index = 0
-        if(self.r=="r1"):
+        if(self.r == "r1"):
             index = 22
         else:
             index = 23
-        sk = s[:k+1]
+        sk = s[:k + 1]
         n = len(sk)
         i = 0
         result = []
         while(i < n):
             result.append(sk[i][0][index])
-            i+=1
+            i += 1
         cuenta1 = collections.Counter(result)
         return cuenta1.most_common(1)[0][0]
-            
+
+    # Encuentra el maximo de un atributo continuo
     def find_max(self,data, index):
         n = len(data)
         i = 0
@@ -382,25 +340,30 @@ class KNN:
                 maxx = data[i][index]
             i += 1
         return maxx    
-
-    def distance(self,node1, node2):
+ 
+    # Mide la distancia entre 2 nodos
+    # |atributo1 - atributo2| si es continuo
+    # 0 si atributo1 = atributo2 si es discreto
+    # 1 si atributo1 != atributo2 si es discreto
+    def distance(self, node1, node2):
         distance = 0
-        n = len(node1)-2
+        n = len(node1) - 2
         i = 0
-        while(i < n+self.d):
+        while(i < n + self.d):
             if (isinstance(node1[i], str)):
-                if(node1[i]==node2[i]):
+                if(node1[i] == node2[i]):
                     distance += 0
                 else:
-                    if(i==22):
+                    if(i == 22):
                         distance += 10
                     else:
                         distance += 1
             else:
-                distance += (abs(node1[i]-node2[i])) / max([node1[i],self.max_data[i]])
-            i+=1
+                distance += (abs(node1[i] - node2[i])) / max([node1[i], self.max_data[i]])
+            i += 1
         return distance
 
+    # Verifica cual nodo tiene menor distancia a un pivote
     def closer_distance(self,pivot, node1, node2):
         if node1 is None:
             return node2
@@ -409,14 +372,15 @@ class KNN:
         d1 = self.distance(pivot, node1)
         d2 = self.distance(pivot, node2)
         if(not([node1,d1] in self.NN)):
-            self.NN.append([node1,d1])
+            self.NN.append([node1, d1])
         if(not([node2,d2] in self.NN)):
-            self.NN.append([node2,d2])
+            self.NN.append([node2, d2])
         if d1 < d2:     
             return node1
         else:
             return node2
 
+    # Recorre el kd-tree buscando los nodos con menor distancia
     def kdtree_closest_point(self,root, point, depth=0):
         if root is None:
             return None
@@ -430,11 +394,13 @@ class KNN:
         else:
             next_branch = root.right_child
             opposite_branch = root.left_child
-      
-        best = self.closer_distance(point,self.kdtree_closest_point(next_branch,point,depth + 1),root.value)
-        best = self.closer_distance(point,self.kdtree_closest_point(opposite_branch,point,depth + 1),best)
+        best = self.closer_distance(point,
+                self.kdtree_closest_point(next_branch, point, depth + 1), root.value)
+        best = self.closer_distance(point,
+                self.kdtree_closest_point(opposite_branch,point, depth + 1), best)
         return best
 
+    # Crea el arbol con los nodos de entrenamiento
     def build_kdtree(self,points, depth=0):
         n = len(points)
         if n <= 0:
@@ -444,7 +410,6 @@ class KNN:
         sorted_points = sorted(points, key=lambda point: point[axis])
         medium = int(n/2)
         node = self.BinaryTree(sorted_points[medium])
-        node.depth = depth
         node.left_child = self.build_kdtree(sorted_points[:medium], depth + 1)
         node.right_child = self.build_kdtree(sorted_points[medium + 1:], depth + 1)
         return node
