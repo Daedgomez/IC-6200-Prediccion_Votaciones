@@ -14,14 +14,11 @@ from sklearn.preprocessing import OneHotEncoder
 
 
 from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
-data = generar_muestra_pais(2000)
+data = generar_muestra_pais(10000)
 
 
 
 
-# load the data
-df = pd.read_csv('Iris.csv')
-# print some of data
 class LR:
     data = []
     npData = []
@@ -34,11 +31,17 @@ class LR:
     X = None
     Y = None
     accuracy = None
+    l1 = 0
+    l2 = 0
+    y_ = None
+    sess = None
 
-    def __init__(self, data,r_):
+    def __init__(self, data,r_,l1,l2):
         self.r = r_
         self.npData = []
         self.y = []
+        self.l1 = l1
+        self.l2 = l2
         self.data = self.convertData(data)
         self.prepare_training_data()
         self.train()
@@ -63,17 +66,23 @@ class LR:
         
         xdata = self.oneHotX.transform(xdata).toarray()
         ydata = self.oneHoty.transform(ydata).toarray()
-        with tf.name_scope("starting_tensorflow_session"):
-            with tf.Session() as sess:
-                #correct_prediction = tf.equal(tf.argmax(y_, 1), tf.argmax(y, 1))
-                # Calculate accuracy for 3000 examples
-                sess.run(tf.global_variables_initializer())
-                print("Accuracy:", self.accuracy.eval({self.X: self.npData[:1800], self.Y: self.y[:1800]}))
-
-
         
+        feed_dict = {self.X: xdata}
+        classification = self.y_.eval(feed_dict,session=self.sess)
+        print(classification)
+        i=0
+        n = len(classification[0])
+        index = list(classification[0]).index(max(classification[0]))
+        classification[0][index] = 1
+        while(i<n):
+            if(classification[0][i]!=1):
+                classification[0][i] = 0
+            i+=1
+        print(classification)        
+        inverted = argmax(classification[0])
+        print(self.convert_party(inverted))
         
-        #return self.convert_party(self.clf.predict(np.c_[xdata])[0])
+        #return self.convert_party(inverted)
         
 
     
@@ -98,60 +107,31 @@ class LR:
             
         with tf.name_scope("Declaring_functions"):
             # our prediction function
-            y_ = tf.nn.softmax(tf.add(tf.matmul(self.X, W), b))
+            self.y_ = tf.nn.softmax(tf.add(tf.matmul(self.X, W), b))
 
         with tf.name_scope("calculating_cost"):
             # calculating cost
-            cost = tf.nn.softmax_cross_entropy_with_logits(labels=self.Y, logits=y_)
+            cost = tf.nn.softmax_cross_entropy_with_logits(labels=self.Y, logits=self.y_)
             
         with tf.name_scope("declaring_gradient_descent"):
             # optimizer
             # we use gradient descent for our optimizer 
-            optimizer = tf.train.ProximalGradientDescentOptimizer(learning_rate=learning_rate,l1_regularization_strength=0.0,
-    l2_regularization_strength=0.0).minimize(cost)
+            optimizer = tf.train.ProximalGradientDescentOptimizer(learning_rate=learning_rate,l1_regularization_strength=self.l1,
+    l2_regularization_strength=self.l2).minimize(cost)
             #optimizer=tf.train.FtrlOptimizer(learning_rate=0.1,l1_regularization_strength=1.0,l2_regularization_strength=1.0)
 
 
 
-        with tf.name_scope("starting_tensorflow_session"):
-            with tf.Session() as sess:
-                # initialize all variables
-                sess.run(tf.global_variables_initializer())
-                for epoch in range(num_epochs):
-                    cost_in_each_epoch = 0
-                    # let's start training
-                    _, c = sess.run([optimizer, cost], feed_dict={self.X: self.npData[1800:], self.Y: self.y[1800:]})
-                    cost_in_each_epoch += c
-                    # you can uncomment next two lines of code for printing cost when training
-                    #if (epoch+1) % display_step == 0:
-                        #print("Epoch: {}".format(epoch + 1), "cost={}".format(cost_in_each_epoch))
-                
-                print("Optimization Finished!")
-                # Test model
-                correct_prediction = tf.equal(tf.argmax(y_, 1), tf.argmax(self.Y, 1))
-                # Calculate accuracy for 3000 examples
-                self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-
-                feed_dict = {self.X: [self.npData[1800]]}
-                classification = y_.eval(feed_dict)
-                print(classification)
-                i=0
-                n = len(classification[0])
-                while(i<n):
-                    if(classification[0][i]>0.5):
-                        classification[0][i] = 1
-                    else:
-                        classification[0][i] = 0
-                    i+=1
-                print(classification)        
-                inverted = argmax(classification[0])
-                print(self.convert_party(inverted))
-
-
-                print("Accuracy:", self.accuracy.eval({self.X: self.npData[:1800], self.Y: self.y[:1800]}))
-
-
+        self.sess = tf.Session()
+        self.sess.as_default()
+        # initialize all variables
+        self.sess.run(tf.global_variables_initializer())
+        for epoch in range(num_epochs):
+            cost_in_each_epoch = 0
+            # let's start training
+            _, c = self.sess.run([optimizer, cost], feed_dict={self.X: self.npData, self.Y: self.y})
+            cost_in_each_epoch += c
+        print("optimizado")
 
         
     def find_canton_SJ(self,name):
@@ -557,118 +537,31 @@ class LR:
                 self.npData.append(x[:n-1])
                 self.y.append([x[n-1]])
         
-        self.oneHotX.fit(self.npData)
+
+        x = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [2, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [3, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [4, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [5, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [6, 13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 15, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 17, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [4, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 19, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [6, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 21, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [2, 23, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [3, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [4, 25, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [5, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [6, 27, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 29, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 31, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [4, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 33, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [6, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 35, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [2, 37, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [3, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [4, 39, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [5, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [6, 41, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 43, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 45, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [4, 46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 47, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [6, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 49, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [2, 51, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [3, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [4, 53, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [5, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [6, 55, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 57, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 59, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [4, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 61, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [6, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 63, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [2, 65, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [3, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [4, 67, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [5, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [6, 69, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 71, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 73, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [4, 74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 75, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [6, 76, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 77, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 78, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [2, 79, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [3, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        y = [[0],[1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12],[13],[14]]
+        self.oneHotX.fit(x)
         self.npData = self.oneHotX.transform(self.npData).toarray()
         self.w = len(self.npData[0])
-        self.oneHoty.fit(self.y)
+        self.oneHoty.fit(y)
         self.y = self.oneHoty.transform(self.y).toarray()
         self.x = len(self.y[0])
 
 
 
-
-"""
-data = [['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],
-        ['HEREDIA', 'FLORES', 20037, 6.96, 2878.88, 'Urbana', 'Hombre', 41, 5763, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.61, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'ACCION CIUDADANA'],
-        ['SAN JOSE', 'DESAMPARADOS', 208411, 118.26, 1762.31, 'Urbana', 'Hombre', 48, 57355, 3.62, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.92, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],
-        ['SAN JOSE', 'PEREZ ZELEDON', 134534, 1905.51, 70.6, 'Rural', 'Mujer', 48, 38508, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.26, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'RESTAURACION NACIONAL'],
-        ['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Hombre', 39, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],
-        ['CARTAGO', 'EL GUARCO', 41793, 167.69, 249.23, 'Urbana', 'Hombre', 32, 10831, 3.83, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 8.34, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],
-        ['CARTAGO', 'OREAMUNO', 45473, 201.31, 225.89, 'Urbana', 'Hombre', 57, 11232, 4.04, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.11, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'Discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'REPUBLICANO SOCIAL CRISTIANO', 'ACCION CIUDADANA'],
-        ['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Mujer', 96, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA']]
-
-"""
-lr = LR(data,"r1")
-prueba = ['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Mujer', 96, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA']
-lr.test([prueba])
+div = 200
+lr = LR(data[div:],"r1",1.0,10.0)
+#prueba = ['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Mujer', 96, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA']
+#lr.test([prueba])
 
 
-"""
+dd = data[:div]
+n = len(dd)
+i=0
+cor = 0
+while(i<n):
+    a = lr.test([dd[i]])
+    if (a==dd[i][22]):
+        cor+=1
+    i+=1
 
-
-
-
-
-
-
-
-
-# convert Species name to numerical value
-# Iris setosa = 1
-# Iris versicolor = 2
-# Irsi virginica = 3
-df['Species'] = df['Species'].replace(['Setosa', 'Versicolor','Virginica'], [1, 2, 3])
-
-# X is our features ('SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm')
-X = df.loc[:, ['SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']]
-# y is our labels
-y = df.loc[:, ['Species']]
-
-# declare OneHotEncoder from sklearn
-oneHot = OneHotEncoder()
-oneHot.fit(X)
-X = oneHot.transform(X).toarray()
-oneHot.fit(y)
-y = oneHot.transform(y).toarray()
-print("Our features X in one-hot format")
-# let's split our data into training and testing set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.1, random_state=0)
-
-# let's print shape of each train and testing
-print("Shape of X_train: ", X_train.shape)
-print("Shape of y_train: ", y_train.shape)
-print("Shape of X_test: ", X_test.shape)
-print("Shape of y_test", y_test.shape)
-print(X_test)
-
-# hyperparameters
-learning_rate = 0.0001
-num_epochs = 1500
-display_step = 1
-
-# for visualize purpose in tensorboard we use tf.name_scope
-with tf.name_scope("Declaring_placeholder"):
-    # X is placeholdre for iris features. We will feed data later on
-    X = tf.placeholder(tf.float32, [None, 15])
-    # y is placeholder for iris labels. We will feed data later on
-    y = tf.placeholder(tf.float32, [None, 3])
-    
-with tf.name_scope("Declaring_variables"):
-    # W is our weights. This will update during training time
-    W = tf.Variable(tf.zeros([15, 3]))
-    # b is our bias. This will also update during training time
-    b = tf.Variable(tf.zeros([3]))
-    
-with tf.name_scope("Declaring_functions"):
-    # our prediction function
-    y_ = tf.nn.softmax(tf.add(tf.matmul(X, W), b))
-
-with tf.name_scope("calculating_cost"):
-    # calculating cost
-    cost = tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=y_)
-with tf.name_scope("declaring_gradient_descent"):
-    # optimizer
-    # we use gradient descent for our optimizer 
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(cost)
-
-with tf.name_scope("starting_tensorflow_session"):
-    with tf.Session() as sess:
-        # initialize all variables
-        sess.run(tf.global_variables_initializer())
-        for epoch in range(num_epochs):
-            cost_in_each_epoch = 0
-            # let's start training
-            _, c = sess.run([optimizer, cost], feed_dict={X: X_train, y: y_train})
-            cost_in_each_epoch += c
-            # you can uncomment next two lines of code for printing cost when training
-            #if (epoch+1) % display_step == 0:
-                #print("Epoch: {}".format(epoch + 1), "cost={}".format(cost_in_each_epoch))
-        
-        print("Optimization Finished!")
-
-        # Test model
-        correct_prediction = tf.equal(tf.argmax(y_, 1), tf.argmax(y, 1))
-        # Calculate accuracy for 3000 examples
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-        print("Accuracy:", accuracy.eval({X: X_test, y: y_test}))
-"""
