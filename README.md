@@ -7,9 +7,59 @@
 <li>Luis Edward Rodríguez Varela - 2014082498</li>
 </ul>
 <h3>I Semestre 2018</h3>
+<h1></h1>
+
 ---
 <h2>1. Introducción</h2>
 <h2>2. Simulador de Votantes</h2>
+<p>Para realizar los modelos de predicción de votantes es necesario un generador de datos sobre las votaciones. En este mismo curso, en el primer proyecto corto se realizó un simulador de votantes con datos de la primera ronda, además, de datos sociales recopilados en el censo del 2011.
+</p>
+<p>El diseño de este simulador de votantes se divide en 3 partes:</p>
+<ul>
+ <li> Generación de la población: Se hace una carga de un archivo csv, el cual contiene la información de los votos obtenidos por partido por cantón, y a partir de este se generan los datos de toda la población del país. A este archivo se le agregaron todos los indicadores provenientes del censo realizado en Costa Rica en el 2011.</li>
+ <li>Generación de la muestra país: A partir de la creación de la población, se realiza una selección de una determinada muestra indicada por el usuario, con una cantidad no mayor a 2 millones de personas. Para la selección de esta muestra se hace uso de un algoritmo de generación aleatoria, la cual toma en cuenta la proporción de personas que se pueden representar a nivel nacional, y con esto se permite obtener muestras más cercanas a la realidad.
+Para la generación de la muestra país, se hace uso de la función: **generar_muestra_pais(n)**.</li>
+<li>Generación de la muestra provincia: Para la generación de la muestra de una provincia, se realiza lo mismo realizado en la generación de la muestra de un país, con la única diferencia de que los datos son filtrados por la provincia dada por argumento desde la entrada de una función. Para la generación de una muestra de provincia, se utiliza la función **generar_muestra_provincia(n, nombre_provincia)**.</li>
+</ul>
+<p>La salida de las funciones es una lista conteniendo las listas con los siguientes atributos:</p>
+<ul>
+<li>Provincia donde voto.</li>
+<li>Cantón donde voto.</li>
+<li>Poblacion del canton.</li>
+<li>Superficie del cantón.</li>
+<li>Densidad del cantón.</li>
+<li>Tipo de localidad (Urbano,
+Rural).</li>
+
+<li>Sexo.</li>
+<li>Edad.</li>
+<li>Viviendas individuales
+ocupadas.</li>
+<li>Promedio de ocupantes por
+vivienda.</li>
+<li>Estado de la vivienda
+(Bueno, Malo).</li>
+<li>Viviendas de vivienda con
+respecto a los habitantes (Hacinamiento).</li>
+<li>Alfabetismo.</li>
+<li>Escolaridad promedio.</li>
+<li>Asistencia a la educacion
+regular.</li>
+<li>Tasa de participacion (En
+fuerza de trabajo).</li>
+<li>Seguro laboral (Trabaja con
+o sin seguro).</li>
+<li>Persona nacional o
+extranjera.</li>
+<li>Persona discapacitada.</li>
+<li>Persona asegurada.</li>
+<li>Hogar con jefatura femenina.</li>
+<li>Hogar con jefatura
+compartida.</li>
+<li>Partido por el cual el individuo voto en primera ronda.</li>
+<li>Partido por el cual el individuo voto en segunda ronda.</li>
+</ul>
+
 <h2>3. Modelo Lineal</h2>
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
