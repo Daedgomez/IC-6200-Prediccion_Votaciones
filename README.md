@@ -59,8 +59,7 @@ compartida.</li>
 <li>Partido por el cual el individuo voto en segunda ronda.</li>
 </ul>
 <h2>3. Modelo Lineal</h2>
-<p>El modelo de regresión logística utiliza la biblioteca Tensorflow de inteligencia artificial para clasificar los datos, se crea una función lineal:
-</p>
+<p>El modelo de regresión logística utiliza la biblioteca Tensorflow de inteligencia artificial para clasificar los datos, se crea una función lineal:</p>
 <blockquote>
 <p><strong>y</strong> = m <strong>x</strong> + b</p>
 </blockquote>
