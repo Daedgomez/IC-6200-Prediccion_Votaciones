@@ -59,10 +59,18 @@ compartida.</li>
 <li>Partido por el cual el individuo voto en segunda ronda.</li>
 </ul>
 <h2>3. Modelo Lineal</h2>
+<p>El modelo de regresión logística utiliza la biblioteca Tensorflow de inteligencia artificial para clasificar los datos, se crea una función lineal:
+</p>
+<blockquote>
+<p><strong>y</strong> = m <strong>x</strong> + b</p>
+</blockquote>
+<p>Con esta función y los datos de entrenamiento se pueden encontrar los valores de "m" y "b" óptimos para predecir valores de salida.</p>
 <h3>Diseño del modelo</h3>
-<p></p>
+<p>Para este modelo fue necesario convertir todos los datos de entrada a datos númericos, además, es necesario separar las entradas de las salidas de los datos de ejemplo para entrenar el modelo. Se utiliza oneHotEncoder de la biblioteca Scikit para convertir todos los datos a binario y así poder introducir los datos para entrenamiento</p>
+<p>Esta biblioteca utiliza tensores, por lo que es necesario crear los marcadores iniciales "x" y "y", las variables "m" y "b" y la función lineal anterior, luego con descenso de gradiente y valores de regularización L1 y L2 se optimiza el modelo conforme es entrenado con los datos de entrenamiento. Los valores de regularización son usados para evitar el sobreajuste y eliminar el ruido en el modelo</p>
 <h3>Prueba del modelo</h3>
-<p></p>
+<p>Para probar el modelo solo se necesita llamar la función eval(), brindando como paramétro el dato a probar y la sesión donde se optimizó la función con los tensores.</p>
+<h4>Análisis de resultados con diferentes valores de L1 y L2.</h4>
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
 <h2>6. KNN</h2>
