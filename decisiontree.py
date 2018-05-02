@@ -18,59 +18,84 @@ def calc_decision_tree(sample_data):
 #Calc the entropy of the attributes
 def calc_info_gain(sample_data, round_number):
 
-	if len(sample_data) == 0:
-		print("Realización de la ejecución del programa con éxito")
-	else:		
-		print("Estos son los datos de muestra")
-		print("")
-		print(sample_data)
-		print("")
-		
-		class_list = calc_class_data(round_number,sample_data)
-		information_gain_list =[]
-		class_entropy_num = class_entropy(round_number, sample_data)
-		position = 0
-		for i in range(len(sample_data)-2):
-			attrib_value_list = calc_class_data(i, sample_data)
-			info_gain = class_entropy_num
-			attrib_value_entropy_list = []
-			for j in range(len(attrib_value_list)):
-				attrib_value_entropy_list.append(calc_attrib_value_entropy(j, attrib_value_list[j],sample_data,
-					class_list, round_number))
-			for k in range(len(attrib_value_entropy_list)):
-				factor = factor + (calc_class_data(i, attrib_value_list[j]) * attrib_value_entropy_list[k])
-			info_gain = info_gain - factor
-			information_gain_list.append(info_gain)
-		for l in range(len(information_gain_list)):
+	#if len(sample_data) == 0:
+	#	print("Realización de la ejecución del programa con éxito")
+	#else:		
+	print("Estos son los datos de muestra")
+	print("")
+	print(sample_data)
+	print("")
+	
+	print("_Impresión 1")
+	class_list = calc_class_data(round_number,sample_data)
+	information_gain_list =[]
+	print("__Impresion 2")
+	class_entropy_num = class_entropy(round_number, sample_data)
+	position = 0
+	attributes_count = len(sample_data[0]) - 2
+	for i in range(attributes_count): #Travel the list of attributes
+		print("___Impresión 3")
+		attrib_value_list = calc_class_data(i, sample_data)
+		attrib_value_entropy_list = []
+		for j in range(len(attrib_value_list)):
+			attrib_value_entropy_list.append(calc_attrib_value_entropy(j,attribute_value_list[j],sample_data,round_number))
+
+			attrib_value_entropy_list = calc_attrib_value_entropy(calc)
+
+		for j in range(len(attrib_value_list)):
+			print("____Impresion 4")
+			attrib_value_entropy_list.append(calc_attrib_value_entropy(j, attrib_value_list[j],sample_data,
+				class_list, round_number))
+		"""for k in range(len(attrib_value_entropy_list)):
+			print("_____Impresion 5")
+			factor = factor + (calc_class_data(i, attrib_value_list[j]) * attrib_value_entropy_list[k])
+		info_gain = info_gain - factor
+		information_gain_list.append(info_gain)
+	for l in range(len(information_gain_list)):
+		major_element = information_gain_list[l]
+		if (information_gain_list[l]) >= major_element:
 			major_element = information_gain_list[l]
-			if (information_gain_list[l]) >= major_element:
-				major_element = information_gain_list[l]
-				position = l
-		return calc_info_gain(sample_data[position].pop(l),round_number)
+			position = l
+	#	return calc_info_gain(sample_data[position].pop(l),round_number)
+	"""
+
+#Calculate the count of the elements in a list
+def found_count_in_list(class_element, sample_data, position):
 
 
-
-def calc_attrib_value_found(attribute_value_position,sample_data,round_number):
 	count = 0
 	for i in range(len(sample_data)):
-		if sample_data[i][attribute_value_position] == sample_data[i][round_number]:
+		if (class_element == sample_data[i][position]):
 			count = count + 1
 	return count
 
-def calc_attrib_value_prob(attribute_value_position,attrib_value,sample_data,round_number,):
-	probabability = calc_attrib_value_found(attribute_value_position, sample_data,round_number)/found_count_in_list(attrib_value, sample_data,attribute_value_position)
-	return probabability
 
-def calc_attrib_value_entropy(attribute_value_position, attrib_value,sample_data, class_list, round_number):
-	attrib_value_prob_list = [] #List of the probabilities of the every class
-	entropy = 0.0
+def calc_attrib_value_found(class_list,sample_data,round_number):
+	count = 0
 	for i in range(len(sample_data)):
+		if sample_data[i][attribute_value_position] == attrib_value:
+			count = count + 1
+	return count
+
+def calc_value_prob(class_element,attrib_value,sample_data,class_list,round_number):
+	for i in range(len(sample_data)):
+		prob_value_list= found_count_in_list(class_element,attrib_value,sample_data,attribute_value_position)/calc_attrib_value_found(attribute_value_position, sample_data,attrib_value)
+	return prob_value_list
+
+def calc_attrib_value_entropy(attribute_value_list, attrib_value,sample_data, class_list, round_number):
+	value_prob_list = [] #List of the probabilities of the every class
+	entropy = 0.0
+	for i in range(len(class_list)): #class list of the round
+		#append the prob of one value according to a class
+		value_prob_list.append(calc_value_prob(class_list[i],attrib_value, sample_data, class_list, round_number)
+
+
 		for j in range(len(class_list)):
 			attrib_value_prob_list.append(calc_attrib_value_prob(attribute_value_position, attrib_value,sample_data, round_number))
 		print("Value " + attrib_value + " " + str(attrib_value_prob_list[i]))
 	base = 2.0
 	for i in range(len(class_list)):
-		entropy = entropy - (attrib_value_prob_list[i] * (math.log(base,(attrib_value_prob_list[i]))))
+		entropy = entropy - (value_prob_list[i] * (math.log(base,(value_prob_list[i]))))
 	print("Entropy of the value " + str(attribute_value) + "= " + str(entropy))
 
 
@@ -93,15 +118,7 @@ def class_entropy(round_number, sample_data):
 	for i in range(len(class_list)):
 		entropy = entropy - (probabilistic_class_list[i] * (math.log(base,probabilistic_class_list[i])))
 	print("Entropy of the class: " + str(i) + "= " + str(entropy))
-
-#Calculate the count of the elements in a list
-def found_count_in_list(element, list, position):
-	count = 0
-	for i in range(len(list)):
-		if (element == list[i][position]):
-			count = count + 1
-	return count
-
+	return entropy
 
 #Calc the class of an object
 def calc_class_data(position, data_list):
@@ -113,7 +130,7 @@ def calc_class_data(position, data_list):
 				found = True
 		if found == False:
 			class_data_list.append(data_list[i][position])
-	print(class_data_list)
+	print("Impresión de la lista de clase de los datos" + str(class_data_list))
 	return class_data_list
 
 
