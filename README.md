@@ -18,8 +18,8 @@
 <ul>
  <li> Generación de la población: Se hace una carga de un archivo csv, el cual contiene la información de los votos obtenidos por partido por cantón, y a partir de este se generan los datos de toda la población del país. A este archivo se le agregaron todos los indicadores provenientes del censo realizado en Costa Rica en el 2011.</li>
  <li>Generación de la muestra país: A partir de la creación de la población, se realiza una selección de una determinada muestra indicada por el usuario, con una cantidad no mayor a 2 millones de personas. Para la selección de esta muestra se hace uso de un algoritmo de generación aleatoria, la cual toma en cuenta la proporción de personas que se pueden representar a nivel nacional, y con esto se permite obtener muestras más cercanas a la realidad.
-Para la generación de la muestra país, se hace uso de la función: **generar_muestra_pais(n)**.</li>
-<li>Generación de la muestra provincia: Para la generación de la muestra de una provincia, se realiza lo mismo realizado en la generación de la muestra de un país, con la única diferencia de que los datos son filtrados por la provincia dada por argumento desde la entrada de una función. Para la generación de una muestra de provincia, se utiliza la función **generar_muestra_provincia(n, nombre_provincia)**.</li>
+Para la generación de la muestra país, se hace uso de la función: <strong>generar_muestra_pais(n)</strong>.</li>
+<li>Generación de la muestra provincia: Para la generación de la muestra de una provincia, se realiza lo mismo realizado en la generación de la muestra de un país, con la única diferencia de que los datos son filtrados por la provincia dada por argumento desde la entrada de una función. Para la generación de una muestra de provincia, se utiliza la función <strong>generar_muestra_provincia(n, nombre_provincia)</strong>.</li>
 </ul>
 <p>La salida de las funciones es una lista conteniendo las listas con los siguientes atributos:</p>
 <ul>
@@ -30,7 +30,6 @@ Para la generación de la muestra país, se hace uso de la función: **generar_m
 <li>Densidad del cantón.</li>
 <li>Tipo de localidad (Urbano,
 Rural).</li>
-
 <li>Sexo.</li>
 <li>Edad.</li>
 <li>Viviendas individuales
@@ -64,8 +63,42 @@ compartida.</li>
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
 <h2>6. KNN</h2>
+<p>El modelo no paramétrico de busqueda de los k vecinos más cercanos es un algoritmo perezoso porque durante el entrenamiento solo guarda datos, no construye ningún modelo específico, por lo que la clasificación se realiza cuando se realizan las pruebas. La forma de guardar los datos es con un árbol de k-dimensiones, con esto se evita hacer un cálculo de distancia a todos los elementos de manera lineal.</p>
+<p>Los problemas que afectan a este modelo son:</p>
+<ul>
+<li>Los atributos irrelevantes lo afectan.</li>
+<li>Muy sensible al ruido.</li>
+<li>Lento si hay muchos datos de entrenamiento.</li>
+</ul>
+<h3>Diseño del modelo</h3>
+El modelo utiliza un árbol binario donde se guardan cada uno de los individuos de entrenamiento comparando en cada nivel de profundidad el atributo con índice:
+<blockquote>
+<p><strong>Índice</strong> = <strong>Profundidad</strong> mod <strong>Cantidad de atributos</strong></p>
+</blockquote>
+<p>Entonces, por ejemplo: en el primer nodo la profundidad es 0 y la cantidad de atributos de entrada son 22 por lo que al aplicar la fórmula el índice a comparar es el 0, así si en la comparación es menor el dato nuevo se escribe en el hijo izquierdo, y si en la comparación el dato nuevo es mayor entonces se escribe en el hijo derecho, de esta manera recursivamente se llena todo el árbol de k-dimensiones.</p>
+<blockquote>
+<p><strong>Índice</strong> = 0 mod 22 = 0</p>
+</blockquote>
+<h3>Prueba del modelo</h3>
+<p></p>
+<blockquote>
+<p><strong>Distancia</strong> = $-b \pm \sqrt{b^2 - 4ac} \over 2a$</p> 
+<p>| atributo1 - atributo2 | si son <strong>Continuos</strong>.</p>
+<p>0 si son <strong>Discretos</strong> y son iguales.</p>
+<p>1 si son <strong>Discretos</strong> y son diferentes.</p>
+</blockquote>
 <h2>7. SVM</h2>
 <h2>8. Conclusiones</h2>
+
+
+
+
+
+
+
+
+
+
 
 
 
