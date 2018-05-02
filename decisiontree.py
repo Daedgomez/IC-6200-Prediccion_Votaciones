@@ -1,4 +1,4 @@
-from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
+#from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
 
 import math
 
@@ -77,7 +77,7 @@ def found_count_in_list(class_element,attrib_value,sample_data, class_list,round
 	print("Cuenta de un attributo: " + str(count))
 	return count
 
-#Calculate teh count in which a value of an attribute is found
+#Calculate the count in which a value of an attribute is found
 def calc_attrib_value_found(attrib_value,sample_data,attribute_position):
 	count = 0
 	for i in range(len(sample_data)):
@@ -101,11 +101,11 @@ def calc_attrib_value_entropy(attribute_value_list, attrib_value,sample_data, cl
 		value_prob_list.append(calc_value_prob(class_list[i],attrib_value, sample_data, class_list,round_number,attrib_value_position))
 	base = 2.0
 	for j in range(len(value_prob_list)):
-		while True:
-			try:
-				entropy = entropy - (value_prob_list[j] * math.log(value_prob_list[j], base))
-			except ValueError:
-				print("Error a la hora de realizar la operación")			
+		print ("IMPRIMIENDO EL RESULTADO DE LA PROBABILIDAD DE UN VALOR DE UN ATRIBUTO " + str(value_prob_list[j]))
+		if (value_prob_list[j] == 0):
+			entropy = entropy + 0
+		else:
+			entropy = entropy - (value_prob_list[j] * math.log(value_prob_list[j], base))		
 	return entropy
 
 #Calculate the probablistic to be found in a list
@@ -131,7 +131,10 @@ def class_entropy(round_number, sample_data):
 		print("Class " + class_list[i] + ": " + str(probabilistic_class_list[i]))
 	base = 2.0
 	for i in range(len(class_list)):
-		entropy = entropy - (probabilistic_class_list[i] * (math.log(probabilistic_class_list[i],base)))
+		if (probabilistic_class_list[i] == 0):
+			entropy = entropy + 0
+		else:
+			entropy = entropy - (probabilistic_class_list[i] * (math.log(probabilistic_class_list[i],base)))
 	print("Entropy of the class: " + str(i) + "= " + str(entropy))
 	return entropy
 
@@ -150,4 +153,5 @@ def calc_class_data(position, data_list):
 
 
 print("Iniciando el programa...")
-calc_decision_tree(generar_muestra_pais(5))
+sample_data = [['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['HEREDIA', 'FLORES', 20037, 6.96, 2878.88, 'Urbana', 'Hombre', 41, 5763, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.61, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'ACCION CIUDADANA'],['SAN JOSE', 'DESAMPARADOS', 208411, 118.26, 1762.31, 'Urbana', 'Hombre', 48, 57355, 3.62, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.92, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],['SAN JOSE', 'PEREZ ZELEDON', 134534, 1905.51, 70.6, 'Rural', 'Mujer', 48, 38508, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.26, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'RESTAURACION NACIONAL'],['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Hombre', 39, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['CARTAGO', 'EL GUARCO', 41793, 167.69, 249.23, 'Urbana', 'Hombre', 32, 10831, 3.83, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 8.34, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],['CARTAGO', 'OREAMUNO', 45473, 201.31, 225.89, 'Urbana', 'Hombre', 57, 11232, 4.04, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.11, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'Discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'REPUBLICANO SOCIAL CRISTIANO', 'ACCION CIUDADANA'],['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Mujer', 96, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA']]
+calc_decision_tree(sample_data)
