@@ -58,8 +58,11 @@ compartida.</li>
 <li>Partido por el cual el individuo voto en primera ronda.</li>
 <li>Partido por el cual el individuo voto en segunda ronda.</li>
 </ul>
-
 <h2>3. Modelo Lineal</h2>
+<h3>Diseño del modelo</h3>
+<p></p>
+<h3>Prueba del modelo</h3>
+<p></p>
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
 <h2>6. KNN</h2>
@@ -80,18 +83,27 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <p><strong>Índice</strong> = 0 mod 22 = 0</p>
 </blockquote>
 <h3>Prueba del modelo</h3>
-<p></p>
+<p>Para probar el modelo se realiza un proceso similar al del llenado del árbol, se compara, utilizando la fórmula de la obtención del índice, cada atributo para buscar la ruta del árbol a seguir, comparando la distancia por cada nodo que pasa y guardandolos en una lista de vecinos cercanos.</p>
+<p>Cuando el individuo ya ha recorrido todo el árbol se ordenan los vecinos cercanos de menor a mayor con respecto a la distancia con el individuo de prueba y se seleccionan los primeros k individuos, luego se cuentan la cantidad de coincidencias y se retorna el partido político con mayor coincidencia.</p>
 <blockquote>
-<p><strong>Distancia</strong> = $-b \pm \sqrt{b^2 - 4ac} \over 2a$</p> 
+<p><strong>Distancia</strong> = Sumatoria(</p>
 <p>| atributo1 - atributo2 | si son <strong>Continuos</strong>.</p>
 <p>0 si son <strong>Discretos</strong> y son iguales.</p>
-<p>1 si son <strong>Discretos</strong> y son diferentes.</p>
+<p>1 si son <strong>Discretos</strong> y son diferentes.)</p>
 </blockquote>
+<h4>Análisis de resultados con diferentes valores de k.</h4>
 <h2>7. SVM</h2>
+<p>El modelo de Support Vector Machines fue realizado con la biblioteca Scikit-Learn de inteligencia artificial, este modelo es complejo pues los datos a clasificar no son linealmente separables y se necesita encontrar un conjunto de vectores que formen una función que pueda clasificar los datos.</p>
+<h3>Diseño del modelo</h3>
+<p>Para este modelo fue necesario convertir todos los datos de entrada a datos númericos, además, es necesario separar las entradas de las salidas de los datos de ejemplo para entrenar el modelo</p>
+<p>Cuando se inicializa el objeto "svm" de la biblioteca se dan como parámetros los datos de entrenamiento, el kernel (linear, rbf, poly, sigmoid), la penalización de error (C) y gamma en caso de que se utilice como kernel "rbf" o "sigmoid". Cuando se llama al método fit() la biblioteca busca los vectores con mejor ajuste y crea el modelo listo para ser probado.</p>
+<h3>Prueba del modelo</h3>
+<p>Para probar el modelo solo es necesario llamar al método predict() de la biblioteca con un dato como parámetro y se retorna un partido político como salida. Con diferentes paramétros de entrenamiento se obtienen diferentes resultados en la salida, se analizarán a continuación.</p>
+<h4>Análisis de resultados con diferentes valores de kernel, C y gamma.</h4>
 <h2>8. Conclusiones</h2>
-
-
-
+<h2>9. Apéndices</h2>
+<h3>9.1. Manual de instalación</h3>
+<h3>9.2. Manual de usuario</h3>
 
 
 
