@@ -18,8 +18,8 @@
 <ul>
  <li> Generación de la población: Se hace una carga de un archivo csv, el cual contiene la información de los votos obtenidos por partido por cantón, y a partir de este se generan los datos de toda la población del país. A este archivo se le agregaron todos los indicadores provenientes del censo realizado en Costa Rica en el 2011.</li>
  <li>Generación de la muestra país: A partir de la creación de la población, se realiza una selección de una determinada muestra indicada por el usuario, con una cantidad no mayor a 2 millones de personas. Para la selección de esta muestra se hace uso de un algoritmo de generación aleatoria, la cual toma en cuenta la proporción de personas que se pueden representar a nivel nacional, y con esto se permite obtener muestras más cercanas a la realidad.
-Para la generación de la muestra país, se hace uso de la función: **generar_muestra_pais(n)**.</li>
-<li>Generación de la muestra provincia: Para la generación de la muestra de una provincia, se realiza lo mismo realizado en la generación de la muestra de un país, con la única diferencia de que los datos son filtrados por la provincia dada por argumento desde la entrada de una función. Para la generación de una muestra de provincia, se utiliza la función **generar_muestra_provincia(n, nombre_provincia)**.</li>
+Para la generación de la muestra país, se hace uso de la función: <strong>generar_muestra_pais(n)</strong>.</li>
+<li>Generación de la muestra provincia: Para la generación de la muestra de una provincia, se realiza lo mismo realizado en la generación de la muestra de un país, con la única diferencia de que los datos son filtrados por la provincia dada por argumento desde la entrada de una función. Para la generación de una muestra de provincia, se utiliza la función <strong>generar_muestra_provincia(n, nombre_provincia)</strong>.</li>
 </ul>
 <p>La salida de las funciones es una lista conteniendo las listas con los siguientes atributos:</p>
 <ul>
@@ -30,7 +30,6 @@ Para la generación de la muestra país, se hace uso de la función: **generar_m
 <li>Densidad del cantón.</li>
 <li>Tipo de localidad (Urbano,
 Rural).</li>
-
 <li>Sexo.</li>
 <li>Edad.</li>
 <li>Viviendas individuales
@@ -59,13 +58,66 @@ compartida.</li>
 <li>Partido por el cual el individuo voto en primera ronda.</li>
 <li>Partido por el cual el individuo voto en segunda ronda.</li>
 </ul>
-
 <h2>3. Modelo Lineal</h2>
+<p>El modelo de regresión logística utiliza la biblioteca Tensorflow de inteligencia artificial para clasificar los datos, se crea una función lineal:</p>
+<blockquote>
+<p><strong>y</strong> = m <strong>x</strong> + b</p>
+</blockquote>
+<p>Con esta función y los datos de entrenamiento se pueden encontrar los valores de "m" y "b" óptimos para predecir valores de salida.</p>
+<h3>Diseño del modelo</h3>
+<p>Para este modelo fue necesario convertir todos los datos de entrada a datos númericos, además, es necesario separar las entradas de las salidas de los datos de ejemplo para entrenar el modelo. Se utiliza oneHotEncoder de la biblioteca Scikit para convertir todos los datos a binario y así poder introducir los datos para entrenamiento</p>
+<p>Esta biblioteca utiliza tensores, por lo que es necesario crear los marcadores iniciales "x" y "y", las variables "m" y "b" y la función lineal anterior, luego con descenso de gradiente y valores de regularización L1 y L2 se optimiza el modelo conforme es entrenado con los datos de entrenamiento. Los valores de regularización son usados para evitar el sobreajuste y eliminar el ruido en el modelo</p>
+<h3>Prueba del modelo</h3>
+<p>Para probar el modelo solo se necesita llamar la función eval(), brindando como paramétro el dato a probar y la sesión donde se optimizó la función con los tensores.</p>
+<h4>Análisis de resultados con diferentes valores de L1 y L2.</h4>
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
 <h2>6. KNN</h2>
+<p>El modelo no paramétrico de busqueda de los k vecinos más cercanos es un algoritmo perezoso porque durante el entrenamiento solo guarda datos, no construye ningún modelo específico, por lo que la clasificación se realiza cuando se realizan las pruebas. La forma de guardar los datos es con un árbol de k-dimensiones, con esto se evita hacer un cálculo de distancia a todos los elementos de manera lineal.</p>
+<p>Los problemas que afectan a este modelo son:</p>
+<ul>
+<li>Los atributos irrelevantes lo afectan.</li>
+<li>Muy sensible al ruido.</li>
+<li>Lento si hay muchos datos de entrenamiento.</li>
+</ul>
+<h3>Diseño del modelo</h3>
+El modelo utiliza un árbol binario donde se guardan cada uno de los individuos de entrenamiento comparando en cada nivel de profundidad el atributo con índice:
+<blockquote>
+<p><strong>Índice</strong> = <strong>Profundidad</strong> mod <strong>Cantidad de atributos</strong></p>
+</blockquote>
+<p>Entonces, por ejemplo: en el primer nodo la profundidad es 0 y la cantidad de atributos de entrada son 22 por lo que al aplicar la fórmula el índice a comparar es el 0, así si en la comparación es menor el dato nuevo se escribe en el hijo izquierdo, y si en la comparación el dato nuevo es mayor entonces se escribe en el hijo derecho, de esta manera recursivamente se llena todo el árbol de k-dimensiones.</p>
+<blockquote>
+<p><strong>Índice</strong> = 0 mod 22 = 0</p>
+</blockquote>
+<h3>Prueba del modelo</h3>
+<p>Para probar el modelo se realiza un proceso similar al del llenado del árbol, se compara, utilizando la fórmula de la obtención del índice, cada atributo para buscar la ruta del árbol a seguir, comparando la distancia por cada nodo que pasa y guardandolos en una lista de vecinos cercanos.</p>
+<p>Cuando el individuo ya ha recorrido todo el árbol se ordenan los vecinos cercanos de menor a mayor con respecto a la distancia con el individuo de prueba y se seleccionan los primeros k individuos, luego se cuentan la cantidad de coincidencias y se retorna el partido político con mayor coincidencia.</p>
+<blockquote>
+<p><strong>Distancia</strong> = Sumatoria(</p>
+<p>| atributo1 - atributo2 | si son <strong>Continuos</strong>.</p>
+<p>0 si son <strong>Discretos</strong> y son iguales.</p>
+<p>1 si son <strong>Discretos</strong> y son diferentes.)</p>
+</blockquote>
+<h4>Análisis de resultados con diferentes valores de k.</h4>
 <h2>7. SVM</h2>
+<p>El modelo de Support Vector Machines fue realizado con la biblioteca Scikit-Learn de inteligencia artificial, este modelo es complejo pues los datos a clasificar no son linealmente separables y se necesita encontrar un conjunto de vectores que formen una función que pueda clasificar los datos.</p>
+<h3>Diseño del modelo</h3>
+<p>Para este modelo fue necesario convertir todos los datos de entrada a datos númericos, además, es necesario separar las entradas de las salidas de los datos de ejemplo para entrenar el modelo</p>
+<p>Cuando se inicializa el objeto "svm" de la biblioteca se dan como parámetros los datos de entrenamiento, el kernel (linear, rbf, poly, sigmoid), la penalización de error (C) y gamma en caso de que se utilice como kernel "rbf" o "sigmoid". Cuando se llama al método fit() la biblioteca busca los vectores con mejor ajuste y crea el modelo listo para ser probado.</p>
+<h3>Prueba del modelo</h3>
+<p>Para probar el modelo solo es necesario llamar al método predict() de la biblioteca con un dato como parámetro y se retorna un partido político como salida. Con diferentes paramétros de entrenamiento se obtienen diferentes resultados en la salida, se analizarán a continuación.</p>
+<h4>Análisis de resultados con diferentes valores de kernel, C y gamma.</h4>
 <h2>8. Conclusiones</h2>
+<h2>9. Apéndices</h2>
+<h3>9.1. Manual de instalación</h3>
+<h3>9.2. Manual de usuario</h3>
+
+
+
+
+
+
+
 
 
 
