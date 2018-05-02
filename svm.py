@@ -473,35 +473,3 @@ print(cor*100/div)
 elapsed_time = time.time() - start_time
 print("Elapsed time: %.10f seconds." % elapsed_time)
 
-culo = SVM(data[div:],"r21")
-
-dd = data[:div]
-n = len(dd)
-print(n)
-i=0
-cor = 0
-while(i<n):
-    a = culo.test([dd[i]])
-    if (a==dd[i][23]):
-        cor+=1
-    i+=1
-print(cor*100/div)
-elapsed_time = time.time() - start_time
-print("Elapsed time: %.10f seconds." % elapsed_time)
-
-
-culo2 = SVM(data[div:],"r1")
-print("Train ready")
-dd = data[:div]
-n = len(dd)
-print(n)
-i=0
-cor = 0
-while(i<n):
-    a = culo2.test([dd[i]])
-    if (a==dd[i][22]):
-        cor+=1
-    i+=1
-print(cor*100/div)
-elapsed_time = time.time() - start_time
-print("Elapsed time: %.10f seconds." % elapsed_time)
