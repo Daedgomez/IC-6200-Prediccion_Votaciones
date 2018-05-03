@@ -213,8 +213,8 @@ class Comandos(cmd.Cmd):
             if("--porcentaje-pruebas" in argumentos):
                 global porcentaje_pruebas
                 porcentaje_pruebas = int(argumentos[argumentos.index("--porcentaje-pruebas")+1])
+            global modelo
             if("--svm" in argumentos):
-                global modelo
                 modelo = "svm"
                 global c
                 c = float(argumentos[argumentos.index("--c")+1])
@@ -223,17 +223,14 @@ class Comandos(cmd.Cmd):
                 global kernel
                 kernel = argumentos[argumentos.index("--kernel")+1]
             elif("--knn" in argumentos):
-                global modelo
                 modelo = "knn"
                 global k
                 k = int(argumentos[argumentos.index("--k")+1])
             elif("--arbol" in argumentos):
-                global modelo
                 modelo = "ad"
                 global umbral_poda
                 umbral_poda = float(argumentos[argumentos.index("--umbral-poda")+1])
             elif("--red-neuronal" in argumentos):
-                global modelo
                 modelo = "rn"
                 global numero_capas
                 numero_capas = int(argumentos[argumentos.index("--numero-capas")+1])
@@ -242,7 +239,6 @@ class Comandos(cmd.Cmd):
                 global funcion_activacion
                 funcion_activacion = int(argumentos[argumentos.index("--funcion-activacion")+1])
             elif("--regresion-logistica" in argumentos):
-                global modelo
                 modelo = "rl"
                 global l1
                 l1 = float(argumentos[argumentos.index("--l1")+1])
@@ -396,8 +392,8 @@ class KNN:
             opposite_branch = root.left_child
         best = self.closer_distance(point,
                 self.kdtree_closest_point(next_branch, point, depth + 1), root.value)
-        best = self.closer_distance(point,
-                self.kdtree_closest_point(opposite_branch,point, depth + 1), best)
+        #best = self.closer_distance(point,
+        #        self.kdtree_closest_point(opposite_branch,point, depth + 1), best)
         return best
 
     # Crea el arbol con los nodos de entrenamiento

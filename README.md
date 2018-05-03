@@ -6,6 +6,8 @@
 <li>David Gómez Vargas - 2015028430</li>
 <li>Luis Edward Rodríguez Varela - 2014082498</li>
 </ul>
+
+
 <h3>I Semestre 2018</h3>
 <h1></h1>
 
@@ -70,6 +72,9 @@ compartida.</li>
 <h3>Prueba del modelo</h3>
 <p>Para probar el modelo solo se necesita llamar la función eval(), brindando como paramétro el dato a probar y la sesión donde se optimizó la función con los tensores.</p>
 <h4>Análisis de resultados con diferentes valores de L1 y L2.</h4>
+
+![alt text](images/rl.png "Resultados de regresión logística")
+
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
 <h2>6. KNN</h2>
@@ -99,6 +104,9 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <p>1 si son <strong>Discretos</strong> y son diferentes.)</p>
 </blockquote>
 <h4>Análisis de resultados con diferentes valores de k.</h4>
+
+![alt text](images/knn.png "Resultados de knn")
+
 <h2>7. SVM</h2>
 <p>El modelo de Support Vector Machines fue realizado con la biblioteca Scikit-Learn de inteligencia artificial, este modelo es complejo pues los datos a clasificar no son linealmente separables y se necesita encontrar un conjunto de vectores que formen una función que pueda clasificar los datos.</p>
 <h3>Diseño del modelo</h3>
@@ -107,6 +115,13 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <h3>Prueba del modelo</h3>
 <p>Para probar el modelo solo es necesario llamar al método predict() de la biblioteca con un dato como parámetro y se retorna un partido político como salida. Con diferentes paramétros de entrenamiento se obtienen diferentes resultados en la salida, se analizarán a continuación.</p>
 <h4>Análisis de resultados con diferentes valores de kernel, C y gamma.</h4>
+
+![alt text](images/svmk.png "Resultados de svm")
+
+![alt text](images/svmc.png "Resultados de svm")
+
+![alt text](images/svmg.png "Resultados de svm")
+
 <h2>8. Conclusiones</h2>
 <h2>9. Apéndices</h2>
 <h3>9.1. Manual de instalación</h3>
