@@ -28,13 +28,14 @@ class NeuralNet:
         listCutIndex=(len(self.data)*self.percentageTesting)//100
         self.dataTrainig=numpy.array(self.data[listCutIndex:])
         self.dataTesting=numpy.array(self.data[:listCutIndex])
-        #RED NEURONAL
-        # load  Datos elecciones+atributos en datasets
+        
       
 
         #Aca se generarán las 3 tipo de predicciones.
     def predict_r1():
-          self.X = self.dataTrainig[:,0:23]
+        #NEURONAL NET
+        # load  Datos elecciones+atributos en datasets
+        self.X = self.dataTrainig[:,0:23]
         self.Y = self.dataTrainig[:,23] #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
 
 
@@ -108,7 +109,9 @@ class NeuralNet:
 
 
     def predict_r2-r1():
-          self.X = self.dataTrainig[:,0:23]
+        #NEURONAL NET
+        # load  Datos elecciones+atributos en datasets
+        self.X = self.dataTrainig[:,0:23]
         self.Y = self.dataTrainig[:,23] #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
 
 
@@ -127,17 +130,6 @@ class NeuralNet:
 
 
         ##self.model.add(Dense(1, activation='softmax'))
-
-
-        # 55 % en tamaño de muestra 1000
-        # model.add(Dense(9, input_dim=23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(1, activation='sigmoid'))
 
 
         # Compile model
