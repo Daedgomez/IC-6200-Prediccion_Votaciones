@@ -21,18 +21,94 @@ class NeuralNet:
 
 
 
-    def __init__(self, data, percentageTesting):        
+    def __init__(self, data, percentageTesting,predicionType):        
         self.dataCompleta=data
         self.data = self.convertData(data)
         self.percentageTesting=percentageTesting
         listCutIndex=(len(self.data)*self.percentageTesting)//100
         self.dataTrainig=numpy.array(self.data[listCutIndex:])
         self.dataTesting=numpy.array(self.data[:listCutIndex])
-
-
         #RED NEURONAL
         # load  Datos elecciones+atributos en datasets
-        self.X = self.dataTrainig[:,0:23]
+      
+
+        #Aca se generarán las 3 tipo de predicciones.
+    def predict_r1():
+          self.X = self.dataTrainig[:,0:23]
+        self.Y = self.dataTrainig[:,23] #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
+
+
+        # create model
+        #model = Sequential()
+        #(#neuronas, funcion de activacion ,)
+        #Dense=capas conectadas completamente
+        self.model.add(Dense(9, input_dim=23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(1, activation='sigmoid'))
+
+
+        ##self.model.add(Dense(1, activation='softmax'))
+
+
+        # 55 % en tamaño de muestra 1000
+        # model.add(Dense(9, input_dim=23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(1, activation='sigmoid'))
+
+
+        # Compile model
+        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+
+    def predict_r2():
+          self.X = self.dataTrainig[:,0:22] ##No toma en cuenta partido de primera ronda
+        self.Y = self.dataTrainig[:,23] #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
+
+
+        # create model
+        #model = Sequential()
+        #(#neuronas, funcion de activacion ,)
+        #Dense=capas conectadas completamente
+        self.model.add(Dense(9, input_dim=23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(23, activation='relu'))
+        self.model.add(Dense(1, activation='sigmoid'))
+
+
+        ##self.model.add(Dense(1, activation='softmax'))
+
+
+        # 55 % en tamaño de muestra 1000
+        # model.add(Dense(9, input_dim=23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(23, activation='relu'))
+        # model.add(Dense(1, activation='sigmoid'))
+
+
+        # Compile model
+        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+
+    def predict_r2-r1():
+          self.X = self.dataTrainig[:,0:23]
         self.Y = self.dataTrainig[:,23] #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
 
 
@@ -89,7 +165,7 @@ class NeuralNet:
         # Fit the model
         self.model.fit(self.X, self.Y, epochs=150, batch_size=10)
 
-    def validation(self):
+    def validation(self,):
         # evaluate the model
         scores = self.model.evaluate(self.X, self.Y)
         print("\n%s: %.2f%%" % (self.model.metrics_names[1], scores[1]*100)) #Imprime basado en las metricas que puse en model.compile()
