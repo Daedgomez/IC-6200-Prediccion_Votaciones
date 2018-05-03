@@ -70,11 +70,13 @@ compartida.</li>
 <p>Para este modelo fue necesario convertir todos los datos de entrada a datos númericos, además, es necesario separar las entradas de las salidas de los datos de ejemplo para entrenar el modelo. Se utiliza oneHotEncoder de la biblioteca Scikit para convertir todos los datos a binario y así poder introducir los datos para entrenamiento</p>
 <p>Esta biblioteca utiliza tensores, por lo que es necesario crear los marcadores iniciales "x" y "y", las variables "m" y "b" y la función lineal anterior, luego con descenso de gradiente y valores de regularización L1 y L2 se optimiza el modelo conforme es entrenado con los datos de entrenamiento. Los valores de regularización son usados para evitar el sobreajuste y eliminar el ruido en el modelo</p>
 <h3>Prueba del modelo</h3>
-<p>Para probar el modelo solo se necesita llamar la función eval(), brindando como paramétro el dato a probar y la sesión donde se optimizó la función con los tensores.</p>
+<p>Para probar el modelo solo se necesita llamar la función eval(), brindando como parámetro el dato a probar y la sesión donde se optimizó la función con los tensores.</p>
 <h4>Análisis de resultados con diferentes valores de L1 y L2.</h4>
 
 ![alt text](images/rl.png "Resultados de regresión logística")
 
+<p>Para la regresión logística se analiza los valores L1 y L2 de regularización para evitar el sobreajuste, en la figura anterior se observan diferentes valores de error para cada una de las predicciones de las votaciones con diferentes parámetros de regularización. En el caso de la segunda ronda con conocimiento del voto de la primera ronda se observa que se obtiene un menor error con valores de regularización muy bajos, menores a 1. El procentaje de error mínimo es de aproximadamente 15% lo cual es bastante bueno para un modelo no paramétrico.</p>
+<p>Para la predicción de la primera ronda y la segunda, sin el dato de la primera, se observa que los parámetros no tienen una tendencia muy clara, pero con valores muy altos de L1 y L2 no se visualiza un buen rendimiento.</p>
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
 <h2>6. KNN</h2>
@@ -113,7 +115,7 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <p>Para este modelo fue necesario convertir todos los datos de entrada a datos númericos, además, es necesario separar las entradas de las salidas de los datos de ejemplo para entrenar el modelo</p>
 <p>Cuando se inicializa el objeto "svm" de la biblioteca se dan como parámetros los datos de entrenamiento, el kernel (linear, rbf, poly, sigmoid), la penalización de error (C) y gamma en caso de que se utilice como kernel "rbf" o "sigmoid". Cuando se llama al método fit() la biblioteca busca los vectores con mejor ajuste y crea el modelo listo para ser probado.</p>
 <h3>Prueba del modelo</h3>
-<p>Para probar el modelo solo es necesario llamar al método predict() de la biblioteca con un dato como parámetro y se retorna un partido político como salida. Con diferentes paramétros de entrenamiento se obtienen diferentes resultados en la salida, se analizarán a continuación.</p>
+<p>Para probar el modelo solo es necesario llamar al método predict() de la biblioteca con un dato como parámetro y se retorna un partido político como salida. Con diferentes parámetros de entrenamiento se obtienen diferentes resultados en la salida, se analizarán a continuación.</p>
 <h4>Análisis de resultados con diferentes valores de kernel, C y gamma.</h4>
 
 ![alt text](images/svmk.png "Resultados de svm")
