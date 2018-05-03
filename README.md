@@ -72,6 +72,7 @@ compartida.</li>
 <h3>Prueba del modelo</h3>
 <p>Para probar el modelo solo se necesita llamar la función eval(), brindando como paramétro el dato a probar y la sesión donde se optimizó la función con los tensores.</p>
 <h4>Análisis de resultados con diferentes valores de L1 y L2.</h4>
+![alt text](images/rl.png "Description goes here")
 ![Preview](https://raw.githubusercontent.com/Daedgomez/IC-6200-Prediccion_Votantes/master/images/rl.png)
 ![Texto alternativo](../images/rl.png)
 <h2>4. Red Neuronal</h2>
