@@ -32,10 +32,9 @@ def calc_info_gain(sample_data, round_number):
 	print("__Impresion 2")
 	class_entropy_num = class_entropy(round_number, sample_data)
 	position = 0
-	factor = 0
-	entropy_attribute_rest = class_entropy_num
 	attributes_count = len(sample_data[0]) - 2
 	for i in range(attributes_count): #Travel the list of attributes
+		factor = 0
 		print("___Impresión 3")
 		attrib_value_list = calc_class_data(i, sample_data)
 		attrib_value_entropy_list = [] #Store the entropy of the values of an attribute of the data
@@ -45,9 +44,10 @@ def calc_info_gain(sample_data, round_number):
 		for k in range(len(attrib_value_entropy_list)):
 			print("____Impresion 5")
 			factor = factor + ((calc_attrib_value_found(attrib_value_list[k],sample_data,i)/len(sample_data)) * attrib_value_entropy_list[k])
-		entropy_attribute_rest = entropy_attribute_rest - factor
+		entropy_attribute_rest = class_entropy_num - factor
 		information_gain_list.append(entropy_attribute_rest)
-	print("Information gain of the attributes " + str(information_gain_list))		
+	print("Information gain of the attributes " + str(information_gain_list))
+
 
 #Calculate the count of a value of a attribute according to a class in a data
 def found_count_in_list(class_element,attrib_value,sample_data, class_list,round_number, attrib_value_position):
@@ -153,5 +153,5 @@ def calc_class_data(position, data_list):
 
 
 print("Iniciando el programa...")
-sample_data = [['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['HEREDIA', 'FLORES', 20037, 6.96, 2878.88, 'Urbana', 'Hombre', 41, 5763, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.61, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'ACCION CIUDADANA'],['SAN JOSE', 'DESAMPARADOS', 208411, 118.26, 1762.31, 'Urbana', 'Hombre', 48, 57355, 3.62, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.92, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],['SAN JOSE', 'PEREZ ZELEDON', 134534, 1905.51, 70.6, 'Rural', 'Mujer', 48, 38508, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.26, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'RESTAURACION NACIONAL'],['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Hombre', 39, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['CARTAGO', 'EL GUARCO', 41793, 167.69, 249.23, 'Urbana', 'Hombre', 32, 10831, 3.83, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 8.34, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],['CARTAGO', 'OREAMUNO', 45473, 201.31, 225.89, 'Urbana', 'Hombre', 57, 11232, 4.04, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.11, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'Discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'REPUBLICANO SOCIAL CRISTIANO', 'ACCION CIUDADANA'],['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Mujer', 96, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA']]
+sample_data = [['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['HEREDIA', 'FLORES', 20037, 6.96, 2878.88, 'Urbana', 'Hombre', 41, 5763, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.61, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'ACCION CIUDADANA'],['SAN JOSE', 'DESAMPARADOS', 208411, 118.26, 1762.31, 'Urbana', 'Hombre', 48, 57355, 3.62, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.92, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA']]
 calc_decision_tree(sample_data)
