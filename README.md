@@ -72,7 +72,7 @@ compartida.</li>
 <h3>Prueba del modelo</h3>
 <p>Para probar el modelo solo se necesita llamar la función eval(), brindando como paramétro el dato a probar y la sesión donde se optimizó la función con los tensores.</p>
 <h4>Análisis de resultados con diferentes valores de L1 y L2.</h4>
-![Texto alternativo](/images/rl.png)
+![Texto alternativo](../images/rl.png)
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
 <h2>6. KNN</h2>
