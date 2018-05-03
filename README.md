@@ -74,8 +74,7 @@ compartida.</li>
 <h4>Análisis de resultados con diferentes valores de L1 y L2.</h4>
 
 ![alt text](images/rl.png "Description goes here")
-![Preview](https://raw.githubusercontent.com/Daedgomez/IC-6200-Prediccion_Votantes/master/images/rl.png)
-![Texto alternativo](../images/rl.png)
+
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
 <h2>6. KNN</h2>
