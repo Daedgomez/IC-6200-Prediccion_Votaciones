@@ -43,7 +43,7 @@ def convert_party(inData):
 
 class NeuralNet:
     data = []
-    dataCompletaR1 = [] 
+    dataCompleta = [] 
     #percentageTesting=0
     dataTrainigR1=[]
     dataTrainigR2=[]
@@ -52,13 +52,30 @@ class NeuralNet:
 
 
 
-
+    #--------------R2-R1
     X_R2_R1=numpy.array([])
     Y_R2_R1=numpy.array([])
 
     # create model  Neural Net =NN
     model_R2_R1 = Sequential()
     rounded_R2_R1=[]
+
+    #--------------R2
+    X_R2=numpy.array([])
+    Y_R2=numpy.array([])
+
+    # create model  Neural Net =NN
+    model_R2 = Sequential()
+    rounded_R2=[]
+
+    #--------------R1
+    X_R1=numpy.array([])
+    Y_R1=numpy.array([])
+
+    # create model  Neural Net =NN
+    model_R1 = Sequential()
+    rounded_R1=[]
+
 
 
 
@@ -72,7 +89,7 @@ class NeuralNet:
     def __init__(self, data,numeroCapas, unidadesCapa,funcionActivacion):        
         
         self.data = self.convertData(data)
-        self.dataCompletaR1=numpy.array(self.data)
+        self.dataCompleta=numpy.array(self.data)
         self.numeroCapas=numeroCapas
         self.unidadesCapa=unidadesCapa
         self.funcionActivacion=funcionActivacion
@@ -104,10 +121,9 @@ class NeuralNet:
     def trainNN(self):
 
       
-
-        self.X_R2_R1 = self.dataCompletaR1[:,0:23] ##No toma en cuenta partido de primera ronda
-        self.Y_R2_R1 = self.dataCompletaR1[:,23]  #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
-
+        #RED para R2_R1
+        self.X_R2_R1 = self.dataCompleta[:,0:23] ##No toma en cuenta partido de segunda ronda
+        self.Y_R2_R1 = self.dataCompleta[:,23]  #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
 
         #(#neuronas, funcion de activacion ,)
         #Dense=capas conectadas completamente
@@ -120,22 +136,100 @@ class NeuralNet:
         # Compile model
         self.model_R2_R1.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-
         # Fit the model
         self.model_R2_R1.fit(self.X_R2_R1, self.Y_R2_R1, epochs=150, batch_size=10)
-
-
 
         # evaluate the model
         scores = self.model_R2_R1.evaluate(self.X_R2_R1, self.Y_R2_R1,)
         print("\n%s: %.2f%%" % (self.model_R2_R1.metrics_names[1], scores[1]*100)) #Imprime basado en las metricas que puse en model.compile()
 
-    def testNN(self,dataForPrediction):
+        #--------------------------------------------
+        #RED para R2
+        self.X_R2 = self.dataCompleta[:,0:22] ##No toma en cuenta partido de primera ronda
+        self.Y_R2 = self.dataCompleta[:,22]  #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
+
+        #(#neuronas, funcion de activacion ,)
+        #Dense=capas conectadas completamente
+        self.model_R2.add(Dense(9, input_dim=22, activation='relu'))
+        for i in range(self.numeroCapas):  #
+            self.model_R2.add(Dense(self.unidadesCapa, activation='relu'))
+        self.model_R2.add(Dense(1, activation='sigmoid'))
+
+
+        # Compile model
+        self.model_R2.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+        # Fit the model
+        self.model_R2.fit(self.X_R2, self.Y_R2, epochs=150, batch_size=10)
+
+        # evaluate the model
+        scores = self.model_R2.evaluate(self.X_R2, self.Y_R2,)
+        print("\n%s: %.2f%%" % (self.model_R2.metrics_names[1], scores[1]*100)) #Imprime basado en las metricas que puse en model.compile()
+
+        #--------------------------------------------
+        #RED para R1
+        self.X_R1 = self.dataCompleta[:,0:21] ##No toma en cuenta partido de primera ronda ni partido de segunda ronda
+        self.Y_R1 = self.dataCompleta[:,21]  #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
+
+        #(#neuronas, funcion de activacion ,)
+        #Dense=capas conectadas completamente
+        self.model_R1.add(Dense(9, input_dim=21, activation='relu'))
+        for i in range(self.numeroCapas):  #
+            self.model_R1.add(Dense(self.unidadesCapa, activation='relu'))
+        self.model_R1.add(Dense(1, activation='softmax'))
+
+
+        # Compile model
+        #self.model_R1.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        self.model_R1.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+
+
+        # Fit the model
+        self.model_R1.fit(self.X_R1, self.Y_R1, epochs=150, batch_size=10)
+
+        # evaluate the model
+        scores = self.model_R1.evaluate(self.X_R1, self.Y_R1,)
+        print("\n%s: %.2f%%" % (self.model_R1.metrics_names[1], scores[1]*100)) #Imprime basado en las metricas que puse en model.compile()
+
+    def testR2_R1(self,dataForPrediction): ##R2_R1
+        #Filtrar para agarrar solo voto primera ronda
+        for persona in range(len(dataForPrediction)):
+            dataForPrediction[persona]=dataForPrediction[persona][:23]
+
         tempDataNum=self.convertData(dataForPrediction)
-        aux=numpy.array(tempDataNum)  ##Tiene 23 elementos predice el 24
+        aux=numpy.array(tempDataNum)  ##Tiene 20X elementos predice el 20X+1
         #print(aux)
 
         predictions = self.model_R2_R1.predict(aux)
+        # round predictions
+        rounded = [round(x[0]) for x in predictions]
+        tmp = rounded
+        return convert_party(tmp[0]) #Imprime basado en la funcion de activacion sigmoide la cual solo devuelve 1 o 0
+
+    def testR2(self,dataForPrediction): #R2
+        #Filtrar para NO agarrar voto primera ronda
+        for persona in range(len(dataForPrediction)):
+            dataForPrediction[persona]=dataForPrediction[persona][:22]
+
+        tempDataNum=self.convertData(dataForPrediction)
+        aux=numpy.array(tempDataNum)  ##Tiene 20X elementos predice el 20X+1
+        #print(aux)
+
+        predictions = self.model_R2.predict(aux)
+        # round predictions
+        rounded = [round(x[0]) for x in predictions]
+        tmp = rounded
+        return convert_party(tmp[0]) #Imprime basado en la funcion de activacion sigmoide la cual solo devuelve 1 o 0
+    def testR1(self,dataForPrediction):#R1 
+        #Filtrar para NO agarrar voto primera ronda
+        for persona in range(len(dataForPrediction)):
+            dataForPrediction[persona]=dataForPrediction[persona][:21]
+
+        tempDataNum=self.convertData(dataForPrediction)
+        aux=numpy.array(tempDataNum)  ##Tiene 20X elementos predice el 20X+1
+        #print(aux)
+
+        predictions = self.model_R1.predict(aux)
         # round predictions
         rounded = [round(x[0]) for x in predictions]
         tmp = rounded
@@ -540,7 +634,8 @@ class NeuralNet:
             tmp.append(self.find_insured(data[i][19]))
             tmp.append(self.find_female_head(data[i][20]))
             tmp.append(self.find_shared_head(data[i][21]))
-            tmp.append(self.find_party(data[i][22]))
+            if len(data[i]) == 23 or len(data[i]) == 24:
+                tmp.append(self.find_party(data[i][22]))
             if len(data[i]) == 24:
                 tmp.append(self.find_party(data[i][23]))
             xdata.append(tmp)
@@ -548,9 +643,16 @@ class NeuralNet:
         return xdata
 
 print("Generando poblacion")
-NN=NeuralNet([['CARTAGO', 'CENTRAL', 147898, 287.77, 513.95, 'Urbana', 'Hombre', 20, 38618, 3.8, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.97, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['PUNTARENAS', 'MONTES DE ORO', 12950, 244.76, 52.91, 'Rural', 'Hombre', 57, 3940, 3.29, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.79, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['HEREDIA', 'SANTA BARBARA', 36243, 53.21, 681.13, 'Urbana', 'Mujer', 61, 10108, 3.58, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.79, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'Nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'], ['LIMON', 'CENTRAL', 94415, 1765.79, 53.47, 'Urbana', 'Mujer', 50, 26678, 3.52, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.14, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'RESTAURACION NACIONAL'], ['CARTAGO', 'ALVARADO', 14312, 81.06, 176.56, 'Urbana', 'Mujer', 48, 3612, 3.95, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 6.58, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'RESTAURACION NACIONAL'], ['GUANACASTE', 'LIBERIA', 62987, 1436.47, 43.85, 'Rural', 'Mujer', 50, 16577, 3.75, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.78, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['ALAJUELA', 'VALVERDE VEGA', 18085, 120.25, 150.4, 'Rural', 'Hombre', 61, 5054, 3.57, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.35, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA'], ['ALAJUELA', 'CENTRAL', 254886, 388.43, 656.2, 'Urbana', 'Hombre', 52, 72031, 3.49, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 8.69, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'No asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['ALAJUELA', 'CENTRAL', 254886, 388.43, 656.2, 'Urbana', 'Mujer', 67, 72031, 3.49, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.69, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar sin jefatura compartida', 'REPUBLICANO SOCIAL CRISTIANO', 'ACCION CIUDADANA'], ['CARTAGO', 'ALVARADO', 14312, 81.06, 176.56, 'Urbana', 'Hombre', 24, 3612, 3.95, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 6.58, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar con jefatura compartida', 'LIBERACION NACIONAL', 'ACCION CIUDADANA']]
+NN=NeuralNet([['CARTAGO', 'CENTRAL', 147898, 287.77, 513.95, 'Urbana', 'Hombre', 20, 38618, 3.8, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.97, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['PUNTARENAS', 'MONTES DE ORO', 12950, 244.76, 52.91, 'Rural', 'Hombre', 57, 3940, 3.29, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.79, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['HEREDIA', 'SANTA BARBARA', 36243, 53.21, 681.13, 'Urbana', 'Mujer', 61, 10108, 3.58, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.79, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'Nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'], ['LIMON', 'CENTRAL', 94415, 1765.79, 53.47, 'Urbana', 'Mujer', 50, 26678, 3.52, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.14, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'RESTAURACION NACIONAL'], ['CARTAGO', 'ALVARADO', 14312, 81.06, 176.56, 'Urbana', 'Mujer', 48, 3612, 3.95, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 6.58, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'RESTAURACION NACIONAL'], ['GUANACASTE', 'LIBERIA', 62987, 1436.47, 43.85, 'Rural', 'Mujer', 50, 16577, 3.75, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.78, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['ALAJUELA', 'VALVERDE VEGA', 18085, 120.25, 150.4, 'Rural', 'Hombre', 61, 5054, 3.57, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.35, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA'], ['ALAJUELA', 'CENTRAL', 254886, 388.43, 656.2, 'Urbana', 'Hombre', 52, 72031, 3.49, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 8.69, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'No asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['ALAJUELA', 'CENTRAL', 254886, 388.43, 656.2, 'Urbana', 'Mujer', 67, 72031, 3.49, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.69, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar sin jefatura compartida', 'REPUBLICANO SOCIAL CRISTIANO', 'ACCION CIUDADANA']]
 ,6,23,'relu')
 
+"""
+print("Resultado prediccion R2-R1")
+print(NN.testR2_R1([['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'ACCION CIUDADANA']]))
 
-print("Resultado prediccion")
-print(NN.testNN([['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL']]))
+print("Resultado prediccion R2")
+print(NN.testR2([['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'ACCION CIUDADANA']]))
+"""
+
+print("Resultado prediccion R1")
+print(NN.testR1([['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'ACCION CIUDADANA']]))
