@@ -2,146 +2,146 @@ import csv #Para manejar archivos csv
 from keras.models import Sequential
 from keras.layers import Dense
 import numpy
+#numpy.random.seed(7)
 
-from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
+#from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
+
+# Convierte en texto los numeros de los partidos
+def convert_party(inData):
+    if(inData == 0):
+        outData = "ACCION CIUDADANA"
+    elif(inData == 1):
+        outData = "RESTAURACION NACIONAL"
+    elif(inData == 2):
+        outData = "NULO"
+    elif(inData == 3):
+        outData = "BLANCO"
+    elif(inData == 4):
+        outData = "ACCESIBILIDAD SIN EXCLUSION"
+    elif(inData == 5):
+        outData = "ALIANZA DEMOCRATA CRISTIANA"
+    elif(inData == 6):
+        outData = "DE LOS TRABAJADORES"
+    elif(inData == 7):
+        outData = "FRENTE AMPLIO"
+    elif(inData == 8):
+        outData = "INTEGRACION NACIONAL"
+    elif(inData == 9):
+        outData = "LIBERACION NACIONAL"
+    elif(inData == 10):
+        outData = "MOVIMIENTO LIBERTARIO"
+    elif(inData == 11):
+        outData = "NUEVA GENERACION"
+    elif(inData == 12):
+        outData = "RENOVACION COSTARRICENSE"
+    elif(inData == 13):
+        outData = "REPUBLICANO SOCIAL CRISTIANO"
+    elif(inData == 14):
+        outData = "UNIDAD SOCIAL CRISTIANA"
+    return outData
+
 
 class NeuralNet:
     data = []
-    dataCompleta = [] #Este contiene los atributos con texto
-    percentageTesting=0
-    dataTrainig=[]
-    dataTesting=[]
+    dataCompletaR1 = [] 
+    #percentageTesting=0
+    dataTrainigR1=[]
+    dataTrainigR2=[]
+    dataTrainigR2_R1=[]
+    #dataTesting=[]
 
-    X=numpy.array([])
-    Y=numpy.array([])
+
+
+
+    X_R2_R1=numpy.array([])
+    Y_R2_R1=numpy.array([])
 
     # create model  Neural Net =NN
-    model = Sequential()
-    rounded=[]
+    model_R2_R1 = Sequential()
+    rounded_R2_R1=[]
 
 
 
-    def __init__(self, data, percentageTesting,predicionType):        
-        self.dataCompleta=data
+
+    numeroCapas=0
+    unidadesCapa=0
+    funcionActivacion=''
+
+
+
+    def __init__(self, data,numeroCapas, unidadesCapa,funcionActivacion):        
+        
         self.data = self.convertData(data)
-        self.percentageTesting=percentageTesting
-        listCutIndex=(len(self.data)*self.percentageTesting)//100
+        self.dataCompletaR1=numpy.array(self.data)
+        self.numeroCapas=numeroCapas
+        self.unidadesCapa=unidadesCapa
+        self.funcionActivacion=funcionActivacion
+        self.trainNN()
+
+
+
+        
+
+        """listCutIndex=(len(self.data)*self.percentageTesting)//100
         self.dataTrainig=numpy.array(self.data[listCutIndex:])
         self.dataTesting=numpy.array(self.data[:listCutIndex])
+          n=2#len(self.dataCompleta)
+
+
+        self.dataTrainigR1== [self.data[:n - 2]]
+        self.dataTrainigR2== [self.data[:n - 2]]
+        self.dataTrainigR2_R1== [self.data[:n - 1]]
+
+        print("R1",self.dataTrainigR1)
+        print("R2",self.dataTrainigR2)
+        print("R2-R1",self.dataTrainigR2_R1)"""
+
         
       
 
         #Aca se generarán las 3 tipo de predicciones.
-    def predict_r1():
-        #NEURONAL NET
-        # load  Datos elecciones+atributos en datasets
-        self.X = self.dataTrainig[:,0:23]
-        self.Y = self.dataTrainig[:,23] #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
+
+    def trainNN(self):
+
+      
+
+        self.X_R2_R1 = self.dataCompletaR1[:,0:23] ##No toma en cuenta partido de primera ronda
+        self.Y_R2_R1 = self.dataCompletaR1[:,23]  #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
 
 
-        # create model
-        #model = Sequential()
         #(#neuronas, funcion de activacion ,)
         #Dense=capas conectadas completamente
-        self.model.add(Dense(9, input_dim=23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(1, activation='sigmoid'))
-
-
-        ##self.model.add(Dense(1, activation='softmax'))
-
-
-        # 55 % en tamaño de muestra 1000
-        # model.add(Dense(9, input_dim=23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(1, activation='sigmoid'))
+        self.model_R2_R1.add(Dense(9, input_dim=23, activation='relu'))
+        for i in range(self.numeroCapas):  #
+            self.model_R2_R1.add(Dense(self.unidadesCapa, activation='relu'))
+        self.model_R2_R1.add(Dense(1, activation='sigmoid'))
 
 
         # Compile model
-        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        self.model_R2_R1.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 
-    def predict_r2():
-          self.X = self.dataTrainig[:,0:22] ##No toma en cuenta partido de primera ronda
-        self.Y = self.dataTrainig[:,23] #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
+        # Fit the model
+        self.model_R2_R1.fit(self.X_R2_R1, self.Y_R2_R1, epochs=150, batch_size=10)
 
 
-        # create model
-        #model = Sequential()
-        #(#neuronas, funcion de activacion ,)
-        #Dense=capas conectadas completamente
-        self.model.add(Dense(9, input_dim=23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(1, activation='sigmoid'))
+
+        # evaluate the model
+        scores = self.model_R2_R1.evaluate(self.X_R2_R1, self.Y_R2_R1,)
+        print("\n%s: %.2f%%" % (self.model_R2_R1.metrics_names[1], scores[1]*100)) #Imprime basado en las metricas que puse en model.compile()
+
+    def testNN(self,dataForPrediction):
+        tempDataNum=self.convertData(dataForPrediction)
+        aux=numpy.array(tempDataNum)  ##Tiene 23 elementos predice el 24
+        #print(aux)
+
+        predictions = self.model_R2_R1.predict(aux)
+        # round predictions
+        rounded = [round(x[0]) for x in predictions]
+        tmp = rounded
+        return convert_party(tmp[0]) #Imprime basado en la funcion de activacion sigmoide la cual solo devuelve 1 o 0
 
 
-        ##self.model.add(Dense(1, activation='softmax'))
-
-
-        # 55 % en tamaño de muestra 1000
-        # model.add(Dense(9, input_dim=23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(23, activation='relu'))
-        # model.add(Dense(1, activation='sigmoid'))
-
-
-        # Compile model
-        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-
-    def predict_r2-r1():
-        #NEURONAL NET
-        # load  Datos elecciones+atributos en datasets
-        self.X = self.dataTrainig[:,0:23]
-        self.Y = self.dataTrainig[:,23] #variable de clase salida, la ultima columna 1 diabetico y 0 no diabetico
-
-
-        # create model
-        #model = Sequential()
-        #(#neuronas, funcion de activacion ,)
-        #Dense=capas conectadas completamente
-        self.model.add(Dense(9, input_dim=23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(23, activation='relu'))
-        self.model.add(Dense(1, activation='sigmoid'))
-
-
-        ##self.model.add(Dense(1, activation='softmax'))
-
-
-        # Compile model
-        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-
-    def imprimir(self):
-        print("******************TODO el set***************")
-        #print(self.data)
-        print("******************TRAINING set***************MIDE:"+str(len(self.dataTrainig)))
-        #print(self.dataTrainig)
-        print("******************FINNNNNNNNNNNNNNNN***************")
 
     def generar_csv(self):
         for i in range(len(self.data)):
@@ -152,23 +152,6 @@ class NeuralNet:
         with myFile:
             writer = csv.writer(myFile)
             writer.writerows(self.dataCompleta)
-    def training(self):
-
-        # Fit the model
-        self.model.fit(self.X, self.Y, epochs=150, batch_size=10)
-
-    def validation(self,):
-        # evaluate the model
-        scores = self.model.evaluate(self.X, self.Y)
-        print("\n%s: %.2f%%" % (self.model.metrics_names[1], scores[1]*100)) #Imprime basado en las metricas que puse en model.compile()
-
-    def test(self):
-        #Esto es lo que se utilizaria con cualquier set de datos nuevos
-        # calculate predictions
-        predictions = self.model.predict(self.X)
-        # round predictions
-        self.rounded = [round(x[0]) for x in predictions]
-        print(self.rounded) #Imprime basado en la funcion de activacion sigmoide la cual solo devuelve 1 o 0
                 
             
     def find_canton_SJ(self,name):
@@ -558,24 +541,16 @@ class NeuralNet:
             tmp.append(self.find_female_head(data[i][20]))
             tmp.append(self.find_shared_head(data[i][21]))
             tmp.append(self.find_party(data[i][22]))
-            tmp.append(self.find_party(data[i][23]))
+            if len(data[i]) == 24:
+                tmp.append(self.find_party(data[i][23]))
             xdata.append(tmp)
             i += 1
         return xdata
 
 print("Generando poblacion")
-NN=NeuralNet(generar_muestra_pais(1000),20)
-
-print("Se va imprimit lista mapeada:\n")
-NN.imprimir()
+NN=NeuralNet([['CARTAGO', 'CENTRAL', 147898, 287.77, 513.95, 'Urbana', 'Hombre', 20, 38618, 3.8, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.97, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['PUNTARENAS', 'MONTES DE ORO', 12950, 244.76, 52.91, 'Rural', 'Hombre', 57, 3940, 3.29, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.79, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['HEREDIA', 'SANTA BARBARA', 36243, 53.21, 681.13, 'Urbana', 'Mujer', 61, 10108, 3.58, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.79, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'Nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'], ['LIMON', 'CENTRAL', 94415, 1765.79, 53.47, 'Urbana', 'Mujer', 50, 26678, 3.52, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.14, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'RESTAURACION NACIONAL'], ['CARTAGO', 'ALVARADO', 14312, 81.06, 176.56, 'Urbana', 'Mujer', 48, 3612, 3.95, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 6.58, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'RESTAURACION NACIONAL'], ['GUANACASTE', 'LIBERIA', 62987, 1436.47, 43.85, 'Rural', 'Mujer', 50, 16577, 3.75, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.78, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['ALAJUELA', 'VALVERDE VEGA', 18085, 120.25, 150.4, 'Rural', 'Hombre', 61, 5054, 3.57, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.35, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA'], ['ALAJUELA', 'CENTRAL', 254886, 388.43, 656.2, 'Urbana', 'Hombre', 52, 72031, 3.49, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 8.69, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'No asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'RESTAURACION NACIONAL', 'RESTAURACION NACIONAL'], ['ALAJUELA', 'CENTRAL', 254886, 388.43, 656.2, 'Urbana', 'Mujer', 67, 72031, 3.49, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.69, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar sin jefatura compartida', 'REPUBLICANO SOCIAL CRISTIANO', 'ACCION CIUDADANA'], ['CARTAGO', 'ALVARADO', 14312, 81.06, 176.56, 'Urbana', 'Hombre', 24, 3612, 3.95, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 6.58, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar con jefatura compartida', 'LIBERACION NACIONAL', 'ACCION CIUDADANA']]
+,6,23,'relu')
 
 
-print("-------------------------------------------RED-----------------------")
-print("------------------------Training----------------------")
-NN.training()
-print("------------------------validation----------------------")
-NN.validation()
-NN.test()
-
-
-NN.generar_csv()
+print("Resultado prediccion")
+print(NN.testNN([['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL']]))
