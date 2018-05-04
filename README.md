@@ -181,7 +181,8 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <p> Se describen los pasos requeridos para poner a funcionar el programa: </p>
 
 <ol>
- <li> Ejecutar el comando `python3 main.py`.
+ <li> Ejecutar el comando "python3 main.py"
+
  <li> Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
  <li> Escribir el comando `predecir --prefijo svmp1 --poblacion 100 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear` si se dedea realizar una predicción utilizando el módelo SVM.
  <li> `predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0`
