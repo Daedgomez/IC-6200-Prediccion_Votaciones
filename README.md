@@ -153,24 +153,20 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <h4> 9.1.2 Instalación de scikit  </h4>
 <p> Comandos a ejecutar: </p>
-<ul>
-<li>`sudo pip3 install numpy scipy`
+`sudo pip3 install numpy scipy`
+<p> </p>
+ `pip3 install -U scikit-learn`
 
-<li> `pip3 install -U scikit-learn`
-</ul>
 <h4> 9.1.3 Instalación de matplotlib  </h4>
 
 <p> Comandos a ejecutar: </p>
 
-<ul>
-<li> `pip3 install matplotlib`
-</ul>
+`pip3 install matplotlib`
+
 
 <h4> 9.1.4 Instalación de tensorflow </h4>
 
-<ul>
-<li> `pip3 install tensorflow`
-</ul>
+`pip3 install tensorflow`
 
 <h3>9.2. Manual de usuario</h3>
 
@@ -180,9 +176,10 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <p> Se describen los pasos requeridos para poner a funcionar el programa: </p>
 
-<ol>
- <li> Ejecutar el comando "python3 main.py"
+Ejecutar el comando "python3 main.py"
 
- <li> Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
- <li> Escribir el comando `predecir --prefijo svmp1 --poblacion 100 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear` si se dedea realizar una predicción utilizando el módelo SVM.
- <li> `predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0`
+Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
+
+Escribir el comando `predecir --prefijo svmp1 --poblacion 100 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear` si se dedea realizar una predicción utilizando el módelo SVM.
+
+`predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0`
