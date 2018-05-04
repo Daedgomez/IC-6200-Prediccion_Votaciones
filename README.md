@@ -153,9 +153,10 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <h4> 9.1.2 Instalación de scikit  </h4>
 <p> Comandos a ejecutar: </p>
+
 `sudo pip3 install numpy scipy`
-<p> </p>
- `pip3 install -U scikit-learn`
+
+`pip3 install -U scikit-learn`
 
 <h4> 9.1.3 Instalación de matplotlib  </h4>
 
@@ -176,7 +177,7 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <p> Se describen los pasos requeridos para poner a funcionar el programa: </p>
 
-Ejecutar el comando "python3 main.py"
+Ejecutar el comando  `python3 main.py"`
 
 Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
 
