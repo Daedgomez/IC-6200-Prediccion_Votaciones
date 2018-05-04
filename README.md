@@ -136,4 +136,52 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <h2>8. Conclusiones</h2>
 <h2>9. Apéndices</h2>
 <h3>9.1. Manual de instalación</h3>
+
+<p> El manual de instalación es una guía sobre los ajustes y componentes requeridos para instalar los programas que definen los modelos de predicción de inteligencia artificial.</p>
+
+<p> Dichos componentes se utilizan en conjunto con Python, así que se requiere tener instalado la versión 3.5.2 o superior.</p>
+
+<p> A continuación se describen los comandos requeridos para instalar los componentes, los cuales se instalan ejecutando cada comando desde una Terminal de comandos de Linux </p>
+
+<h4> 9.1.1 Instalación de Scipy  </h4>
+
+<p> Comando a ejecutar: </p>
+
+<ul>
+<li> `pip3 install scipy`
+</ul>
+
+<h4> 9.1.2 Instalación de scikit  </h4>
+<p> Comandos a ejecutar: </p>
+<ul>
+<li>`sudo pip3 install numpy scipy`
+
+<li> `pip3 install -U scikit-learn`
+</ul>
+<h4> 9.1.3 Instalación de matplotlib  </h4>
+
+<p> Comandos a ejecutar: </p>
+
+<ul>
+<li> `pip3 install matplotlib`
+</ul>
+
+<h4> 9.1.4 Instalación de tensorflow </h4>
+
+<ul>
+<li> `pip3 install tensorflow`
+</ul>
+
 <h3>9.2. Manual de usuario</h3>
+
+<p> El manual de usuario es una guía para colocar a funcionar el sistema de predicción del voto. </p>
+
+<p> Para realizar la ejecución del programa de Predicción, se deberá contar con tener instalado la versión Python 3.5.2 o superior. </p>
+
+<p> Se describen los pasos requeridos para poner a funcionar el programa: </p>
+
+<ol>
+ <li> Ejecutar el comando `python3 main.py`.
+ <li> Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
+ <li> Escribir el comando `predecir --prefijo svmp1 --poblacion 100 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear` si se dedea realizar una predicción utilizando el módelo SVM.
+ <li> `predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0`
