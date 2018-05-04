@@ -148,7 +148,7 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <p> Comando a ejecutar: </p>
 
 <ul>
-<li> `pip3 install scipy`
+<li> ``` pip3 install scipy```
 </ul>
 
 <h4> 9.1.2 Instalación de scikit  </h4>
