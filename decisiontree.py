@@ -1,33 +1,34 @@
-#from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
-
+from tec.ic.ia.pc1.g09 import generar_muestra_pais, generar_muestra_provincia
+import copy # Para hacer deepcopy de variables
 import math
-
-political_parties_list=["ACCESIBILIDAD SIN EXCLUSION", "ACCION CIUDADANA", "ALIANZA DEMOCRATA CRISTIANA", 
-"DE LOS TRABAJADORES", "FRENTE AMPLIO	INTEGRACION NACIONAL", "LIBERACION NACIONAL", "MOVIMIENTO LIBERTARIO", 
-"NUEVA GENERACION", "RENOVACION COSTARRICENSE", "REPUBLICANO SOCIAL CRISTIANO", "RESTAURACION NACIONAL", 
-"UNIDAD SOCIAL CRISTIANA"]
-
 
 
 class Decision_tree_model:
 
 	attrib_value_entropy_general_list = []
 	r = ""
-	sample_data = None
+	dt = None
 
-	def __init__(self, sample_data, r):
+	def __init__(self, sample_data, r, umbral):
 		self.r = r
-		self.sample_data = sample_data
-		self.calc_decision_tree(sample_data, r)
+		self.dt  = self.calc_info_gain(self.convert_to_interval(sample_data), r)
 		
+		
+	def test(self,data):
+		data = self.convert_to_interval([data])
+		return self.testt(data[0],self.dt)
 
-	#Calc the order of the attributes for to do the decision tree
-	def calc_decision_tree(self, sample_data, r):
-		if (self.calc_info_gain(sample_data, r)) == True:
-			print("Realización del árbol de decisión con éxito")
-		else:
-			print("ERROR")
-		return 0
+	def testt(self,data,tree):
+		try:		
+			index = tree.element
+			index2 = tree.decisions.index(data[index])
+			if(type(tree.children[index2]) == str):
+				return tree.children[index2]
+			else:
+				return self.testt(data,tree.children[index2])
+		except ValueError:
+            		return "No value"
+		
 
 	#Calc the entropy of the attributes
 	def calc_info_gain(self, sample_data, r):
@@ -35,10 +36,6 @@ class Decision_tree_model:
 		if len(sample_data) == 0:
 			print("Realización de la ejecución del programa con éxito")
 		else:		
-			print("Estos son los datos de muestra")
-			print("")
-			print(sample_data)
-			print("")
 
 			attributes_count = 0
 			class_list = []
@@ -59,10 +56,8 @@ class Decision_tree_model:
 				class_type = len(sample_data[0]) - 1
 				class_list = self.calc_class_data(class_type,sample_data)
 			
-			print("_Impresión 1")
 			
 			information_gain_list =[]
-			print("__Impresion 2")
 			class_entropy_num = self.class_entropy(class_type, sample_data)
 			position = 0
 			attributes_max = 0 
@@ -81,19 +76,43 @@ class Decision_tree_model:
 					factor = factor + ((self.calc_attrib_value_found(attrib_value_list[k],sample_data,i)/len(sample_data)) * attrib_value_entropy_list[k])
 				entropy_attribute_rest = class_entropy_num - factor
 				information_gain_list.append(entropy_attribute_rest)
-			attributes_max = max(information_gain_list)
-			index = information_gain_list.index(attributes_max)
-			print ("Lista con todas las entropías de los valores de los atributos " , self.attrib_value_entropy_general_list)
-			print("Indice del attributo con mayor ganancia :", index)
-			print("Information gain of the attributes " + str(information_gain_list))
-			tmp = self.calc_attrib_value_class(index)
-			print("Lista con los valores que poseen entropía igual cero y sus respectivas clases" , tmp)
-			print("Lista con los valores que poseen entropía diferente a cero y sus respectivas clases", self.calc_no_attrib_value_class(index))
-			self.calc_del_attrib_value_sd(tmp, index)
-			print("Nueva sample data ", self.sample_data)
-			return self.calc_info_gain(self.sample_data,self.r)
 
-	def calc_attrib_value_class(self, index):
+			if(max(information_gain_list)!= 0):
+				attributes_max = max(information_gain_list)
+				index = information_gain_list.index(attributes_max)
+				print ("Lista con todas las entropías de los valores de los atributos " , self.attrib_value_entropy_general_list)
+				print("Indice del attributo con mayor ganancia :", index)
+				print("Information gain of the attributes " + str(information_gain_list))
+				tmp = self.calc_attrib_value_class(index,sample_data)
+				print("Lista con los valores que poseen entropía igual cero y sus respectivas clases" , tmp)
+				tmp2 = self.calc_no_attrib_value_class(index)
+				print("Lista con los valores que poseen entropía diferente a cero y sus respectivas clases", tmp2)
+				sample_data = self.calc_del_attrib_value_sd(tmp, index, sample_data)
+				print("Nueva sample data ", sample_data)
+				dt = Decision_tree(index)
+				i = 0
+				n = len(tmp)
+				while(i<n):
+					dt.decisions.append(tmp[i][0])
+					dt.children.append(tmp[i][1])
+					i += 1
+				i = 0
+				n = len(tmp2)
+				while(i<n):
+					dt.decisions.append(tmp2[i])
+					dt.children.append(self.calc_info_gain(sample_data,self.r))
+					i += 1
+				return dt
+			else:
+				if(self.r == "r1"):
+					return sample_data[0][len(sample_data[0])-2]
+				else:
+					return sample_data[0][len(sample_data[0])-1]
+
+	
+
+
+	def calc_attrib_value_class(self, index, sample_data):
 		val = self.attrib_value_entropy_general_list[index] #list of the values with a class
 		n = len(val)
 		i = 0
@@ -101,7 +120,7 @@ class Decision_tree_model:
 		while (i<n):
 			if (val[i][1] == 0):
 				tmp = val[i][0]
-				for x in self.sample_data:
+				for x in sample_data:
 					if (tmp == x[index]):
 						if (self.r == "r1"):
 							result_list.append([tmp, x[len(x) - 2]])
@@ -122,7 +141,7 @@ class Decision_tree_model:
 			i += 1
 		return result_list
 
-	def calc_del_attrib_value_sd(self, result_list,index):
+	def calc_del_attrib_value_sd(self, result_list,index, sample_data):
 		i = 0
 		n = len(result_list)
 		drop = []
@@ -130,20 +149,23 @@ class Decision_tree_model:
 			j = 0
 			m = len(sample_data)
 			while(j < m):
-				if (result_list[i][0] == self.sample_data[j][index]):
+				if (result_list[i][0] == sample_data[j][index]):
 					drop.append(j)
 				j += 1
 			i += 1
 		n = len(drop)
 		i = 0
+		drop = sorted(drop)
+		print(drop)
 		while(n > i):
-			self.sample_data.pop(drop[n - 1])
+			sample_data.pop(drop[n - 1])
 			n -= 1
-		n = len(self.sample_data)
+		n = len(sample_data)
 		while(i < n):
-			self.sample_data[i][index] = 0
+			sample_data[i][index] = 0
 			i += 1
-
+		return sample_data
+        
 	#Calculate the count of a value of a attribute according to a class in a data
 	def found_count_in_list(self, class_element,attrib_value,sample_data, class_list,class_type, attrib_value_position):
 		count = 0
@@ -252,42 +274,63 @@ class Decision_tree_model:
 				class_data_list.append(data_list[i][position])
 		#print("Impresión de la lista de clase de los datos" + str(class_data_list))
 		return class_data_list
+	
+	def convert_to_interval(self,data):
+		i = 0
+		n = len(data)
+		while(i < n):
+			if(data[i][2] < 50000):
+				data[i][2] = "0 a 50000"
+			elif(data[i][2] < 100000 and data[i][2] >= 50000):
+				data[i][2] = "50000 a 100000"
+			elif(data[i][2] < 150000 and data[i][2] >= 100000):
+				data[i][2] = "100000 a 150000"
+			elif(data[i][2] < 200000 and data[i][2] >= 150000):
+				data[i][2] = "150000 a 200000"
+			elif(data[i][2] > 200000):
+				data[i][2] = "200000 a 250000"
+			if(data[i][7] < 30):
+				data[i][7] = "18 a 30"
+			elif(data[i][7] < 50 and data[i][7] >= 30):
+				data[i][7] = "30 a 50"
+			elif(data[i][7] < 75 and data[i][7] >= 50):
+				data[i][7] = "50 a 75"
+			elif(data[i][7] < 150 and data[i][7] >= 75):
+				data[i][7] = "75 a 100"
+			data[i].pop(13)
+			data[i].pop(9)
+			data[i].pop(8)
+			data[i].pop(4)
+			data[i].pop(3)
+			data[i].pop(1)
+			i += 1
+		return data
 
 
 class Decision_tree:
-
 	element = None
 	children = None
 	decisions = None
 
 	def __init__(self, element):
 		self.element = element #Index of the attribute in the data
+		self.decisions = []		
 		self.children = []
-		self.decisions = []
-
-	def add_element(self, decision_tree, element, super_element):
-		sub_decision_tree = search_sub_decision_tree(decision_tree, super_element)
-		sub_decision_tree.children.append(Decision_tree(element))
-
-	def search_sub_decision_tree(self, decision_tree, element):
-		if decision_tree.element == element:
-			return decision_tree
-		for sub_decision_tree  in decision_tree.children:
-			searched_sub_decision_tree = search_sub_decision_tree(sub_decision_tree, element)
-			if (searched_sub_decision_tree != None):
-				return searched_sub_decision_tree
-		return None
 		
 
-
-
-
-
-
-
-
-
-
 print("Iniciando el programa...")
-sample_data = [['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['HEREDIA', 'FLORES', 20037, 6.96, 2878.88, 'Urbana', 'Hombre', 41, 5763, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.61, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'ACCION CIUDADANA'],['SAN JOSE', 'DESAMPARADOS', 208411, 118.26, 1762.31, 'Urbana', 'Hombre', 48, 57355, 3.62, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.92, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],['SAN JOSE', 'PEREZ ZELEDON', 134534, 1905.51, 70.6, 'Rural', 'Mujer', 48, 38508, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.26, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'RESTAURACION NACIONAL'],['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Hombre', 39, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['CARTAGO', 'EL GUARCO', 41793, 167.69, 249.23, 'Urbana', 'Hombre', 32, 10831, 3.83, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 8.34, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],['CARTAGO', 'OREAMUNO', 45473, 201.31, 225.89, 'Urbana', 'Hombre', 57, 11232, 4.04, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.11, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'Discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'REPUBLICANO SOCIAL CRISTIANO', 'ACCION CIUDADANA'],['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Mujer', 96, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA']]
-objeto = Decision_tree_model(sample_data, "r2")
+#sample_data = [['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['HEREDIA', 'FLORES', 20037, 6.96, 2878.88, 'Urbana', 'Hombre', 41, 5763, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.61, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'ACCION CIUDADANA'],['SAN JOSE', 'DESAMPARADOS', 208411, 118.26, 1762.31, 'Urbana', 'Hombre', 48, 57355, 3.62, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.92, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],['SAN JOSE', 'PEREZ ZELEDON', 134534, 1905.51, 70.6, 'Rural', 'Mujer', 48, 38508, 3.48, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 7.26, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'UNIDAD SOCIAL CRISTIANA', 'RESTAURACION NACIONAL'],['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Hombre', 39, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL'],['CARTAGO', 'EL GUARCO', 41793, 167.69, 249.23, 'Urbana', 'Hombre', 32, 10831, 3.83, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 8.34, 'No asiste a educacion regular', 'Fuera de la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'ACCION CIUDADANA', 'ACCION CIUDADANA'],['CARTAGO', 'OREAMUNO', 45473, 201.31, 225.89, 'Urbana', 'Hombre', 57, 11232, 4.04, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 8.11, 'Asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja sin seguro', 'No nacido en el extranjero', 'Discapacitado', 'Asegurado', 'Hogar con jefatura femenina', 'Hogar con jefatura compartida', 'REPUBLICANO SOCIAL CRISTIANO', 'ACCION CIUDADANA'],['SAN JOSE', 'CENTRAL', 288054, 44.62, 6455.72, 'Urbana', 'Mujer', 96, 81903, 3.5, 'Vivienda en mal estado', 'Vivienda no hacinada', 'No analfabeta', 9.88, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'INTEGRACION NACIONAL', 'ACCION CIUDADANA']]
+sample_data = generar_muestra_pais(1000)
+objeto = Decision_tree_model(sample_data[:500], "r21", 0)
+i = 0
+d = sample_data[500:]
+n = len(d)
+cor = 0
+x = copy.deepcopy(d)
+while(i<n):
+	a = objeto.test(d[i])
+	if(a==x[i][23]):
+		cor += 1
+	i += 1
+print(cor)
+#print(objeto.test(['SAN JOSE', 'CURRIDABAT', 65206, 15.95, 4088.15, 'Urbana', 'Mujer', 55, 19146, 3.4, 'Vivienda en buen estado', 'Vivienda no hacinada', 'No analfabeta', 10.94, 'No asiste a educacion regular', 'En la fuerza de trabajo', 'Trabaja con seguro', 'No nacido en el extranjero', 'No discapacitado', 'Asegurado', 'Hogar sin jefatura femenina', 'Hogar sin jefatura compartida', 'LIBERACION NACIONAL', 'RESTAURACION NACIONAL']))
