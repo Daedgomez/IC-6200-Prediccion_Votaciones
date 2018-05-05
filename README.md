@@ -121,6 +121,17 @@ compartida.</li>
 <h3> Prueba del modelo </h3>
 
 
+<p> El árbol de decisión se prueba utilizando un cierto número de umbral, el cual permite determinar la profundidad que tendrá el árbol de decisión después de haber realizado la poda, es decir, quitar nodos hoja para tener una decisión más precisa, pero en cierta manera no tan confiable, dependiendo de la cantidad de atributos que sean eliminados durante la poda. </p>
+
+Para el árbol de decisión de este caso, se cuenta con 22 atributos, y se realiza un análisis aplicando poda y determinando el tamaño del umbral del árbol.
+
+![alt text](images/dt.PNG "Resultados de prueba de Árbol de decisión")
+
+Se analizó desde el umbral 0 hasta el umbral 21, así analizando de manera prioritaria o con mayor ganancia los atributos hasta incluirlos a todos en el árbol de decisión.
+
+
+
+
 <h2>6. KNN</h2>
 <p>El modelo no paramétrico de busqueda de los k vecinos más cercanos es un algoritmo perezoso porque durante el entrenamiento solo guarda datos, no construye ningún modelo específico, por lo que la clasificación se realiza cuando se realizan las pruebas. La forma de guardar los datos es con un árbol de k-dimensiones, con esto se evita hacer un cálculo de distancia a todos los elementos de manera lineal.</p>
 <p>Los problemas que afectan a este modelo son:</p>
