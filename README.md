@@ -104,12 +104,22 @@ incluye la columna de voto real en primera ronda
 </ol>
 <ol>Los parametros que pueden configurarse en el modelo de red funcional son los siguientes: 
 <li> <strong> Número de capas</strong>: Se refiere a la cantidad de capas ocultas que tendrá la neurona, estas capas se agregarán entre la capa inicial y la final.
-<li> <strong> Número de unidades o neuronas </strong>: Se refiere a la cantidad de neuronas que tendra cada una de las capas oculta creadas.
-<li> <strong> Cálculo de entropía de los valores de los atributos </strong>: Se aplica el mismo cálculo de la entropía, y además se logra verificar si la entropía es igual a cero, ya que así se llega a una decisión concreta del árbol.
-<li> <strong> Cálculo de la ganancia de la información </strong>: El cálculo de la ganancia es un algoritmo en el cual se commprueba,  utlizando probabilidades y entropías, el atributo que será mayor determinante para seguir una decisión.
-<li> <strong> Comprobación del atributo con mayor ganancia </strong>: Después de calcular las ganancias de información, se escoge al primero que posea la mayor ganancia.
-<li> <strong> Eliminación de atributos de la lista de la muestra de datos y que poseen la mayor ganancia de información </strong>: Se eliminan de la lista los atributos que poseen la mayor ganancia de la información, además que se eliminan aquellas clases de elementos en donde los valores del atributo seleccionados hayan llegado a su fin debido que poseen una entropia igual a cero.
+<li> <strong> Número de unidades o neuronas </strong>: Se refiere a la cantidad de neuronas que tendra cada una de las capas ocultas creadas. Para efecto de pruebas puede utilizar los valores de 23 neuronas en 6 capas.
+<li> <strong> Función de activación </strong>: Función de activación de la neurona. Los parámetros aceptados para esta función son 'relu' y
+<li> <strong> Minimizar la perdida </strong>: Para minimizar la perdida se hace uso del algoritmo "Descenso de gradiente", el  cual provee la libreria Keras.
 </ol>
+
+<h3> Prueba del modelo </h3>
+
+
+<p> Para saber cómo utilizr la predicción por red neuronal por favor véase el  manual de usuario </p>
+
+Para el siguiente caso de prueba, se realizarán las predicciones R2_R1 y R2 con 23 neuronas en 6 capas.
+
+![alt text](images/dt.PNG "Resultados de prueba de Árbol de decisión")
+
+
+
 --------------------------------------------------------------------------------------------------------------------
 <h2>5. Árbol de decisión</h2>
 <p> El aŕbol de decisión es un tipo de algoritmo el cual es utilizado para determinar la predicción de una muestra o arreglo de datos que posea varios atributos. Dicha predicción se realiza de inmediata, con lo cual se van comparando los valores que posee una expresión lógica y se compara con los atributos originados para el árbol de decisión, con el fin de obtener un resultado. </p>
@@ -276,3 +286,25 @@ Ejecutar el comando  `python3 g09.py`
 Escribir el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcentaje-pruebas <valor> --red-neuronal --red-neuronal --numero-capas <valor> --unidades-por-capa <valor> --funcion-activacion <valor>` si se desea realizar una predicción utilizando la red neuronal.
 
 Escribir el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcentaje-pruebas <valor> --arbol --umbral-poda <valor>` si se desea realizar una predicción utilizando el árbol de decisión.
+
+
+<h3>Referencias</h3>
+<ol> 
+<li>1.4. Support Vector Machines — scikit-learn 0.19.1 documentation. (s. f.). Recuperado 5 de mayo de 2018, a partir de http://scikit-learn.org/stable/modules/svm.html
+<li>Árbol kd. (2016, marzo 14). En Wikipedia, la enciclopedia libre. Recuperado a partir de https://es.wikipedia.org/w/index.php?title=%C3%81rbol_kd&oldid=89814916
+<li>Brownlee, J. (2016a, mayo 24). Develop Your First Neural Network in Python With Keras Step-By-Step. Recuperado 5 de mayo de 2018, a partir de https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
+<li>Brownlee, J. (2016b, junio 2). Multi-Class Classification Tutorial with the Keras Deep Learning Library. Recuperado 5 de mayo de 2018, a partir de https://machinelearningmastery.com/multi-class-classification-tutorial-keras-deep-learning-library/
+<li>Desarrolla tu Primera Red Neural en Python con Keras Paso a Paso - ® Cursos Python desde 0 a Experto 🏆 garantizados. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://www.aprenderpython.net/desarrolla-primera-red-neural-python-keras-paso-paso/
+<li>In-Depth: Support Vector Machines | Python Data Science Handbook. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://jakevdp.github.io/PythonDataScienceHandbook/05.07-support-vector-machines.html
+<li>kdtree-in-python: Source Code for K-d tree in Python series. (2018). Python, Tsoding. Recuperado a partir de https://github.com/tsoding/kdtree-in-python (Original work published 2017)
+<li>Logistic regression in Tensorflow for beginner. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://www.kaggle.com/niyamatalmass/logistic-regression-in-tensorflow-for-beginner
+<li>Logistic Regression with TensorFlow. (s. f.). Recuperado 5 de mayo de 2018, a partir de http://www.serrate.net/2018/02/18/logistic-regression-with-tensorflow/index.html
+<li>Model (functional API) - Keras Documentation. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://keras.io/models/model/
+<li>Polamuri, S. (2017, enero 25). Support vector machine (Svm classifier) implemenation in python with Scikit-learn. <li>Recuperado 5 de mayo de 2018, a partir de http://dataaspirant.com/2017/01/25/svm-classifier-implemenation-python-scikit-learn/
+<li>Sequential - Keras Documentation. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://keras.io/models/sequential/
+<li>Sikonja, M. R. (1998). Speeding up Relief algorithms with k-d trees.
+<li>TK. (2017, octubre 28). Learning Tree Data Structure. Recuperado 5 de mayo de 2018, a partir de https://medium.com/the-renaissance-developer/learning-tree-data-structure-27c6bb363051
+<li>Understanding Support Vector Machine algorithm from examples (along with code). (2017, septiembre 13). Recuperado 5 de mayo de 2018, a partir de https://www.analyticsvidhya.com/blog/2017/09/understaing-support-vector-machine-example-code/
+<li>Utils - Keras Documentation. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://keras.io/utils/
+
+</ol>
