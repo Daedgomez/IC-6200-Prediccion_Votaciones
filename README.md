@@ -197,6 +197,13 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 `pip3 install tensorflow`
 
+<h4> 9.1.5 Instalación de Keras </h4>
+
+`pip3 install keras`
+
+
+
+
 <h3>9.2. Manual de usuario</h3>
 
 <p> El manual de usuario es una guía para colocar a funcionar el sistema de predicción del voto. </p>
@@ -207,10 +214,14 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <p> Se describen los pasos requeridos para poner a funcionar el programa: </p>
 
-Ejecutar el comando  `python3 main.py`
+<ul>
 
-Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
+<li> Ejecutar el comando  `python3 main.py`
 
-Escribir el comando `predecir --prefijo svmp1 --poblacion 100 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear` si se dedea realizar una predicción utilizando el módelo SVM.
+<li> Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
 
-Escribir el comando `predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0` si se desea realizar una predicción utilizando regresión logística.
+<li> Escribir el comando `predecir --prefijo svmp1 --poblacion 100 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear` si se dedea realizar una predicción utilizando el módelo SVM.
+
+<li> Escribir el comando `predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0` si se desea realizar una predicción utilizando regresión logística.
+
+</ul>
