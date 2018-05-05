@@ -178,24 +178,24 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <p> Comando a ejecutar: </p>
 
-`pip3 install scipy`
+`pip3 install scipy --user`
 
 <h4> 9.1.2 Instalación de scikit  </h4>
 <p> Comandos a ejecutar: </p>
 
 `sudo pip3 install numpy scipy`
 
-`pip3 install -U scikit-learn`
+`pip3 install -U scikit-learn --user`
 
 <h4> 9.1.3 Instalación de matplotlib  </h4>
 
 <p> Comandos a ejecutar: </p>
 
-`pip3 install matplotlib`
+`pip3 install matplotlib --user`
 
 <h4> 9.1.4 Instalación de tensorflow </h4>
 
-`pip3 install tensorflow`
+`pip3 install tensorflow --user`
 
 <h4> 9.1.5 Instalación de Keras </h4>
 
@@ -218,6 +218,7 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <li> Ejecutar el comando  `python3 main.py`
 
+<<<<<<< HEAD
 <li> Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
 
 <li> Escribir el comando `predecir --prefijo svmp1 --poblacion 100 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear` si se dedea realizar una predicción utilizando el módelo SVM.
@@ -225,3 +226,14 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <li> Escribir el comando `predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0` si se desea realizar una predicción utilizando regresión logística.
 
 </ul>
+=======
+Ejecutar el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcentaje-pruebas <valor> --knn --k <valor>` si se dedea realizar una predicción utilizando el módelo KNN.
+
+Escribir el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcentaje-pruebas <valor> --svm --c <valor> --gamma <valor> --kernel <valor>` si se dedea realizar una predicción utilizando el módelo SVM.
+
+Escribir el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcentaje-pruebas <valor> --regresion-logistica --l1 <valor> --l2 <valor>` si se desea realizar una predicción utilizando regresión logística.
+
+Escribir el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcentaje-pruebas <valor> --red-neuronal --red-neuronal --numero-capas <valor> --unidades-por-capa <valor> --funcion-activacion <valor>` si se desea realizar una predicción utilizando la red neuronal.
+
+Escribir el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcentaje-pruebas <valor> --arbol --umbral-poda <valor>` si se desea realizar una predicción utilizando el árbol de decisión.
+>>>>>>> 1ae490b7f7c7c6e012bbb3f93a287b70e1491e2a
