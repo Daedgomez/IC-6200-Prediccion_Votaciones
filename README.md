@@ -116,7 +116,7 @@ incluye la columna de voto real en primera ronda
 
 Para el siguiente caso de prueba, se realizarán las predicciones R2_R1 y R2 con 23 neuronas en 6 capas.
 
-![alt text](images/dt.PNG "Resultados de prueba de Árbol de decisión")
+![alt text](images/rn.PNG "Resultados de prueba de Red neuronal")
 
 
 
@@ -300,11 +300,16 @@ Escribir el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcent
 <li>Logistic regression in Tensorflow for beginner. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://www.kaggle.com/niyamatalmass/logistic-regression-in-tensorflow-for-beginner
 <li>Logistic Regression with TensorFlow. (s. f.). Recuperado 5 de mayo de 2018, a partir de http://www.serrate.net/2018/02/18/logistic-regression-with-tensorflow/index.html
 <li>Model (functional API) - Keras Documentation. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://keras.io/models/model/
+<i>Python tree – Python Tutorial. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://pythonspot.com/
+<i>python - Error when checking model input: expected convolution2d_input_1 to have shape (None, 3, 32, 32) but got array with shape (50000, 32, 32, 3). (s. f.). Recuperado 5 de mayo de 2018, a partir de https://stackoverflow.com/questions/41771965/error-when-checking-model-input-expected-convolution2d-input-1-to-have-shape-n
+python-tree/
 <li>Polamuri, S. (2017, enero 25). Support vector machine (Svm classifier) implemenation in python with Scikit-learn. <li>Recuperado 5 de mayo de 2018, a partir de http://dataaspirant.com/2017/01/25/svm-classifier-implemenation-python-scikit-learn/
 <li>Sequential - Keras Documentation. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://keras.io/models/sequential/
 <li>Sikonja, M. R. (1998). Speeding up Relief algorithms with k-d trees.
 <li>TK. (2017, octubre 28). Learning Tree Data Structure. Recuperado 5 de mayo de 2018, a partir de https://medium.com/the-renaissance-developer/learning-tree-data-structure-27c6bb363051
 <li>Understanding Support Vector Machine algorithm from examples (along with code). (2017, septiembre 13). Recuperado 5 de mayo de 2018, a partir de https://www.analyticsvidhya.com/blog/2017/09/understaing-support-vector-machine-example-code/
 <li>Utils - Keras Documentation. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://keras.io/utils/
+<li>» ¿Qué es y para qué sirve una red neuronal artificial? El blog de Víctor Yepes. (s. f.). Recuperado 5 de mayo de 2018, a partir de https://victoryepes.blogs.upv.es/2017/01/07/que-es-y-para-que-sirve-una-red-neuronal-artificial/
+
 
 </ol>
