@@ -1,5 +1,4 @@
 [
-  "Unit_tests/test_knn.py::test_f1",
-  "Unit_tests/test_knn.py::test_f2",
-  "Unit_tests/test_knn.py::test_f3"
+  "Unit_tests/test_dt.py::test_class_entropy",
+  "Unit_tests/test_dt.py::test_calc_class_data"
 ]
