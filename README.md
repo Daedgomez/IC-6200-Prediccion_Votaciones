@@ -155,7 +155,9 @@ Para el árbol de decisión de este caso, se cuenta con 22 atributos, y se reali
 
 ![alt text](images/dt.PNG "Resultados de prueba de Árbol de decisión")
 
-Se analizó desde el umbral 0 hasta el umbral 21, así analizando de manera prioritaria o con mayor ganancia los atributos hasta incluirlos a todos en el árbol de decisión.
+Se analizó desde el umbral 0 hasta el umbral 21, así comprobando de manera prioritaria o con mayor ganancia los atributos hasta incluirlos a todos en el árbol de decisión.
+
+Se puede observar que en la prueba R21 se obtuvieron porcentajes de error mucho menores que los indicados en las otras 2 pruebas, lo cual viene a tener de forma más precisa cuales parámetros utilizar en el futuro. 
 
 
 
