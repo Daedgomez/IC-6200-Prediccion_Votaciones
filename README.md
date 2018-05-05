@@ -81,7 +81,25 @@ compartida.</li>
 
 <p>Para la regresión logística se analiza los valores L1 y L2 de regularización para evitar el sobreajuste, en la figura anterior se observan diferentes valores de error para cada una de las predicciones de las votaciones con diferentes parámetros de regularización. En el caso de la segunda ronda con conocimiento del voto de la primera ronda se observa que se obtiene un menor error con valores de regularización muy bajos, menores a 1. El procentaje de error mínimo es de aproximadamente 15% lo cual es bastante bueno para un modelo no paramétrico.</p>
 <p>Para la predicción de la primera ronda y la segunda, sin el dato de la primera, se observa que los parámetros no tienen una tendencia muy clara, pero con valores muy altos de L1 y L2 no se visualiza un buen rendimiento.</p>
+---------------------------------------------------------------------------------------------------------------------
 <h2>4. Red Neuronal</h2>
+<p>El modelo de Red neuronal utiliza la biblioteca de Keras la cual, está integrada, con un backend Tensorflow de inteligencia artificial. Las redes de neuronas artificiales (denominadas habitualmente como RNA o en inglés como: “ANN”) son un paradigma de aprendizaje y procesamiento automático inspirado en la forma en que funciona el sistema nervioso de los animales. Se trata de un sistema de interconexión de neuronas que colaboran entre sí para producir un estímulo de salida. En inteligencia artificial es frecuente referirse a ellas como redes de neuronas o redes neuronales. Forman parte de los denominados “Sistemas Inteligentes“, dentro de la rama de la Inteligencia Artificial.</p>
+<h3> Diseño del modelo </h3>
+<p>Para la realización del modelo fue necesario convertir todos los atributos a numeros para utilizar la red neuronal. Posteriormente los datos son convertidos a un arreglo numpy, el cual es la estructra, que se debe utilizar con Keras. Para realizar cada una de las 3 predicciones. Para cada prediccion el conjunto de entrenamiento es divido entre parte X que son los datos que recibe la red, y el conjunto de Y, que son la diferentes salidas que se posee. A continuacion se detallará cada predicción </p>
+<ol>
+<li> <strong> Predicción R2-R1 </strong>: predicción del partido político por el que se votó en primera ronda.
+<li> <strong> Predicción R2 </strong>: predicción del partido político por el que se votó en segunda ronda. No
+incluye la columna de voto real en primera ronda
+</ol>
+<ol>Los parametros que pueden configurarse en el modelo de red funcional son los siguientes: 
+<li> <strong> Número de capas</strong>: Se refiere a la cantidad de capas ocultas que tendrá la neurona, estas capas se agregarán entre la capa inicial y la final.
+<li> <strong> Número de unidades o neuronas </strong>: Se refiere a la cantidad de neuronas que tendra cada una de las capas oculta creadas.
+<li> <strong> Cálculo de entropía de los valores de los atributos </strong>: Se aplica el mismo cálculo de la entropía, y además se logra verificar si la entropía es igual a cero, ya que así se llega a una decisión concreta del árbol.
+<li> <strong> Cálculo de la ganancia de la información </strong>: El cálculo de la ganancia es un algoritmo en el cual se commprueba,  utlizando probabilidades y entropías, el atributo que será mayor determinante para seguir una decisión.
+<li> <strong> Comprobación del atributo con mayor ganancia </strong>: Después de calcular las ganancias de información, se escoge al primero que posea la mayor ganancia.
+<li> <strong> Eliminación de atributos de la lista de la muestra de datos y que poseen la mayor ganancia de información </strong>: Se eliminan de la lista los atributos que poseen la mayor ganancia de la información, además que se eliminan aquellas clases de elementos en donde los valores del atributo seleccionados hayan llegado a su fin debido que poseen una entropia igual a cero.
+</ol>
+--------------------------------------------------------------------------------------------------------------------
 <h2>5. Árbol de decisión</h2>
 <p> El aŕbol de decisión es un tipo de algoritmo el cual es utilizado para determinar la predicción de una muestra o arreglo de datos que posea varios atributos. Dicha predicción se realiza de inmediata, con lo cual se van comparando los valores que posee una expresión lógica y se compara con los atributos originados para el árbol de decisión, con el fin de obtener un resultado. </p>
 
