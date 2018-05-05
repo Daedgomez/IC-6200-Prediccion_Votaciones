@@ -105,7 +105,7 @@ incluye la columna de voto real en primera ronda
 <ol>Los parametros que pueden configurarse en el modelo de red funcional son los siguientes: 
 <li> <strong> Número de capas</strong>: Se refiere a la cantidad de capas ocultas que tendrá la neurona, estas capas se agregarán entre la capa inicial y la final.
 <li> <strong> Número de unidades o neuronas </strong>: Se refiere a la cantidad de neuronas que tendra cada una de las capas ocultas creadas. Para efecto de pruebas puede utilizar los valores de 23 neuronas en 6 capas.
-<li> <strong> Función de activación </strong>: Función de activación de la neurona. Los parámetros aceptados para esta función son 'relu' y
+<li> <strong> Función de activación </strong>: Función de activación de la neurona. Los parámetros aceptados para esta función son 'relu' y 'tan H'.
 <li> <strong> Minimizar la perdida </strong>: Para minimizar la perdida se hace uso del algoritmo "Descenso de gradiente", el  cual provee la libreria Keras.
 </ol>
 
@@ -117,6 +117,8 @@ incluye la columna de voto real en primera ronda
 Para el siguiente caso de prueba, se realizarán las predicciones R2_R1 y R2 con 23 neuronas en 6 capas.
 
 ![alt text](images/rn.PNG "Resultados de prueba de Red neuronal")
+
+Como se puede observar, existe un mayor % de error para generar la prediccion de R2, es decir, predicción de la segunda ronda sin el voto de primera ronda. Comparando a la prediccón R2_R1 que sí toma en cuenta el voto de primera ronda.
 
 
 
