@@ -13,6 +13,10 @@
 
 ---
 <h2>1. Introducción</h2>
+
+La predicción de resultados es uno de los más grandes retos que posee la inteligencia artificial, ya que se requiere tener un modelo de aprendizaje de datos que logre identificar atributos
+
+
 <h2>2. Simulador de Votantes</h2>
 <p>Para realizar los modelos de predicción de votantes es necesario un generador de datos sobre las votaciones. En este mismo curso, en el primer proyecto corto se realizó un simulador de votantes con datos de la primera ronda, además, de datos sociales recopilados en el censo del 2011.
 </p>
@@ -79,6 +83,33 @@ compartida.</li>
 <p>Para la predicción de la primera ronda y la segunda, sin el dato de la primera, se observa que los parámetros no tienen una tendencia muy clara, pero con valores muy altos de L1 y L2 no se visualiza un buen rendimiento.</p>
 <h2>4. Red Neuronal</h2>
 <h2>5. Árbol de decisión</h2>
+<p> El aŕbol de decisión es un tipo de algoritmo el cual es utilizado para determinar la predicción de una muestra o arreglo de datos que posea varios atributos. Dicha predicción se realiza de inmediata, con lo cual se van comparando los valores que posee una expresión lógica y se compara con los atributos originados para el árbol de decisión, con el fin de obtener un resultado. </p>
+
+<p> Este modelo necesita analizar datos para determinar como será construida la estructura del árbol </p>
+
+<h3> Diseño del modelo </h3>
+
+<p> La elaboración del diseño del modelo conlleva los siguientes pasos: </p>
+
+<ol>
+<li> <strong> Definición de atributos </strong>: Se definen los atributos que poseen los datos que se ingresan como entrada al sistema.
+<li> <strong> Definición de valores de atributos </strong>: Se comprueba los valores discretos que poseen cada uno de los atributos en los datos. En caso de que sean valores continuos, se aplicará un algorimo de clasificación y separación de datos.
+<li> <strong> Definición de la clase de datos </strong>: Se define  la clase o los resultados a los cuales se espera llegar a tener con una decisión. Estos elementos se irán eliminando conforme se vaya creando el árbol de decisión.
+<li> <strong> Cálculo de entropía de la clase de datos </strong>: Se aplica el cálculo de la entropía de la clase de datos, el cual indicará que tan cierta es una variable.
+<li> <strong> Cálculo de entropía de los valores de los atributos </strong>: Se aplica el mismo cálculo de la entropía, y además se logra verificar si la entropía es igual a cero, ya que así se llega a una decisión concreta del árbol.
+<li> <strong> Cálculo de la ganancia de la información </strong>: El cálculo de la ganancia es un algoritmo en el cual se commprueba,  utlizando probabilidades y entropías, el atributo que será mayor determinante para seguir una decisión.
+<li> <strong> Comprobación del atributo con mayor ganancia </strong>: Después de calcular las ganancias de información, se escoge al primero que posea la mayor ganancia.
+<li> <strong> Eliminación de atributos de la lista de la muestra de datos y que poseen la mayor ganancia de información </strong>: Se eliminan de la lista los atributos que poseen la mayor ganancia de la información, además que se eliminan aquellas clases de elementos en donde los valores del atributo seleccionados hayan llegado a su fin debido que poseen una entropia igual a cero.
+<li> <strong> Insertar en el árbol atributo con mayor ganancia </strong>: Del punto anterior, se elige el aributo con la mayor ganancia, y este se inserta en el árbol de decisión, agregando además los valores de dicho atributo que permitirá llegar a un resultado definitivo o seguir agregando más atributos o preguntas de decisión.
+<li> <strong> Definición de decisiones que salen de los atributos insertados en el árbol </strong>:  Después de agregar un atributo al árbolde decisión, se definen cuales son los valores que saldrán de este nodo de árbol. En caso de ser un nodo o elemento que muestre el resultado del árbol, no se agregan más valores o ramas de valores a este nodo.
+<li> <strong> Poda del árbol </strong> : Es el proceso en el cual se eliminan nodos hoja del árbol, con el fin de que el mismo quede con mucha menos anchura y se mejore la velocidad en la predicción del modelo.
+
+</ol>
+
+
+<h3> Prueba del modelo </h3>
+
+
 <h2>6. KNN</h2>
 <p>El modelo no paramétrico de busqueda de los k vecinos más cercanos es un algoritmo perezoso porque durante el entrenamiento solo guarda datos, no construye ningún modelo específico, por lo que la clasificación se realiza cuando se realizan las pruebas. La forma de guardar los datos es con un árbol de k-dimensiones, con esto se evita hacer un cálculo de distancia a todos los elementos de manera lineal.</p>
 <p>Los problemas que afectan a este modelo son:</p>
@@ -147,9 +178,7 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <p> Comando a ejecutar: </p>
 
-
 `pip3 install scipy`
-
 
 <h4> 9.1.2 Instalación de scikit  </h4>
 <p> Comandos a ejecutar: </p>
@@ -164,7 +193,6 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 `pip3 install matplotlib`
 
-
 <h4> 9.1.4 Instalación de tensorflow </h4>
 
 `pip3 install tensorflow`
@@ -175,12 +203,14 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <p> Para realizar la ejecución del programa de Predicción, se deberá contar con tener instalado la versión Python 3.5.2 o superior. </p>
 
+<h4> 9.2.1 Ejecución de modelos
+
 <p> Se describen los pasos requeridos para poner a funcionar el programa: </p>
 
-Ejecutar el comando  `python3 main.py"`
+Ejecutar el comando  `python3 main.py`
 
 Ejecutar el comando `predecir --prefijo knnp1 --poblacion 100 --porcentaje-pruebas 20 --knn --k 5` si se dedea realizar una predicción utilizando el módelo KNN.
 
 Escribir el comando `predecir --prefijo svmp1 --poblacion 100 --porcentaje-pruebas 20 --svm --c 1 --gamma 10 --kernel linear` si se dedea realizar una predicción utilizando el módelo SVM.
 
-`predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0`
+Escribir el comando `predecir --prefijo rlp1 --poblacion 100 --porcentaje-pruebas 20 --regresion-logistica --l1 0 --l2 0` si se desea realizar una predicción utilizando regresión logística.
