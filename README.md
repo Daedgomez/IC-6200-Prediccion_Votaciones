@@ -203,7 +203,7 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <p> Para realizar la ejecución del programa de Predicción, se deberá contar con tener instalado la versión Python 3.5.2 o superior. </p>
 
-<h4> 9.2.1 Ejecución de modelos
+<h4> 9.2.1 Ejecución de modelos </h4>
 
 <p> Se describen los pasos requeridos para poner a funcionar el programa: </p>
 
