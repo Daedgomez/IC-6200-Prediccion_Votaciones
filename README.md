@@ -114,7 +114,7 @@ compartida.</li>
 
 Para el árbol de decisión de este caso, se cuenta con 22 atributos, y se realiza un análisis aplicando poda y determinando el tamaño del umbral del árbol.
 
-![alt text](images/dt.png "Resultados de prueba de Árbol de decisión")
+![alt text](images/dt.PNG "Resultados de prueba de Árbol de decisión")
 
 Se analizó desde el umbral 0 hasta el umbral 21, así analizando de manera prioritaria o con mayor ganancia los atributos hasta incluirlos a todos en el árbol de decisión.
 
