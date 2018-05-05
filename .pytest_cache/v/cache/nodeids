@@ -1,0 +1,5 @@
+[
+  "Unit_tests/test_knn.py::test_f1",
+  "Unit_tests/test_knn.py::test_f2",
+  "Unit_tests/test_knn.py::test_f3"
+]
