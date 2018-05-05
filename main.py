@@ -1400,7 +1400,7 @@ class NeuralNet:
         self.model_R2_R1.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         # Fit the model
-        self.model_R2_R1.fit(self.X_R2_R1, self.Y_R2_R1, epochs=150, batch_size=10)
+        self.model_R2_R1.fit(self.X_R2_R1, self.Y_R2_R1, epochs=150, batch_size=10, verbose=0)
 
         # evaluate the model
         #scores = self.model_R2_R1.evaluate(self.X_R2_R1, self.Y_R2_R1,)
@@ -1421,7 +1421,7 @@ class NeuralNet:
         self.model_R2.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         # Fit the model
-        self.model_R2.fit(self.X_R2, self.Y_R2, epochs=150, batch_size=10)
+        self.model_R2.fit(self.X_R2, self.Y_R2, epochs=150, batch_size=10, verbose=0)
 
         # evaluate the model
         #scores = self.model_R2.evaluate(self.X_R2, self.Y_R2,)

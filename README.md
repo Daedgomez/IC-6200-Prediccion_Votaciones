@@ -14,8 +14,19 @@
 ---
 <h2>1. Introducción</h2>
 
-La predicción de resultados es uno de los más grandes retos que posee la inteligencia artificial, ya que se requiere tener un modelo de aprendizaje de datos que logre identificar atributos
-
+<p>La predicción de resultados es uno de los más grandes retos que posee la inteligencia artificial, ya que se requiere tener un modelo, de aprendizaje de datos, que logre identificar atributos como entradas y realizar un análisis, específico de cada modelo, para predecir una salida, la cual se espera sea correcta basada en los datos de entrenamiento.</p>
+<p>En este proyecto se desarrollan 5 modelos de aprendizaje, los cuales son:
+<ul>
+<li>Regresión logística.</li>
+<li>Redes neuronales</li>
+<li>Árboles de decisión</li>
+<li>KNN</li>
+<li>SVM</li>
+</ul>
+</p>
+<p>El objetivo de los modelos es que logren predecir las votaciones de la primera y segunda ronda en Costa Rica, los datos de entrenamiento fueron tomados de los datos de los votos hacia cada partido por mesa electoral, así es posible obtener los datos de las votaciones en cada distrito, cantón y provincia en la primera y segunda ronda. Es interesante poder realizar un análisis con respecto a los resultados en cada cantón o provincia y con los indicadores del Censo del 2011 poder concluir qué tipo de personas votaron por cada partido.</p>
+<p>Con todos estos datos se puede crear una población que representa a todos los votantes Costarricenses con cada uno de los indicadores de su zona de votación, aunque ciertas personas votan en lugares diferentes de donde residen se puede hacer un análisis descriptivo que represente a la mayoría de las personas y tenga un impacto similar a los datos reales. En el presente informe se detalla el diseño de la solución para la generación de muestras que representan conjuntos de datos que son utilizados para aplicar algoritmos de inteligencia artificial creando modelos de aprendizaje paramétricos y no paramétricos.
+</p>
 
 <h2>2. Simulador de Votantes</h2>
 <p>Para realizar los modelos de predicción de votantes es necesario un generador de datos sobre las votaciones. En este mismo curso, en el primer proyecto corto se realizó un simulador de votantes con datos de la primera ronda, además, de datos sociales recopilados en el censo del 2011.
@@ -101,7 +112,7 @@ compartida.</li>
 <li> <strong> Comprobación del atributo con mayor ganancia </strong>: Después de calcular las ganancias de información, se escoge al primero que posea la mayor ganancia.
 <li> <strong> Eliminación de atributos de la lista de la muestra de datos y que poseen la mayor ganancia de información </strong>: Se eliminan de la lista los atributos que poseen la mayor ganancia de la información, además que se eliminan aquellas clases de elementos en donde los valores del atributo seleccionados hayan llegado a su fin debido que poseen una entropia igual a cero.
 <li> <strong> Insertar en el árbol atributo con mayor ganancia </strong>: Del punto anterior, se elige el aributo con la mayor ganancia, y este se inserta en el árbol de decisión, agregando además los valores de dicho atributo que permitirá llegar a un resultado definitivo o seguir agregando más atributos o preguntas de decisión.
-<li> <strong> Definición de decisiones que salen de los atributos insertados en el árbol </strong>:  Después de agregar un atributo al árbolde decisión, se definen cuales son los valores que saldrán de este nodo de árbol. En caso de ser un nodo o elemento que muestre el resultado del árbol, no se agregan más valores o ramas de valores a este nodo.
+<li> <strong> Definición de decisiones que salen de los atributos insertados en el árbol </strong>:  Después de agregar un atributo al árbol de decisión, se definen cuales son los valores que saldrán de este nodo de árbol. En caso de ser un nodo o elemento que muestre el resultado del árbol, no se agregan más valores o ramas de valores a este nodo.
 <li> <strong> Poda del árbol </strong> : Es el proceso en el cual se eliminan nodos hoja del árbol, con el fin de que el mismo quede con mucha menos anchura y se mejore la velocidad en la predicción del modelo.
 
 </ol>
@@ -165,6 +176,13 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 <p>El parémetro "Gamma" solo es útil cuando se utiliza el kernel rbf o sigmoid y muestra que con un valor de Gamma = 0.1 obtiene un valor de error mínimo con muy buenos resultados, luego conforme disminuye Gamma el error va aumentando pero muy poco.</p>
 <p>Para el modelo SVM se demuestra que se debe buscar la combinación de valores que disminuyen el error al mínimo, se encontro que con el kernel rbf y un gamma de 0.1, además, con C igual a 0.1 se encuentran muy buenos resultados.</p>
 <h2>8. Conclusiones</h2>
+<ul>
+<li>Los modelos de aprendizaje son muy variados, aplicar el mismo conjunto de datos a todos los modelos mostrara una diferencia significativa entre los porcentajes de error.</li>
+<li>El modelo con mejor rendimiento es SVM con los parámetros kernel = rbf, C = 0.1 y Gamma = 0.01.</li>
+<li>El modelo paramétrico KNN es el que consume menos potencia computacional, pues con 10000 datos dura unos pocos segundos.</li>
+<li>Al utilizar k-Cross Validation el error de entrenamiento y el error de prueba es similar en la mayoria de los modelos, justo lo que se requiere para el análisis de los modelos.</li>
+</ul>
+
 <h2>9. Apéndices</h2>
 <h3>9.1. Manual de instalación</h3>
 
@@ -207,7 +225,7 @@ El modelo utiliza un árbol binario donde se guardan cada uno de los individuos 
 
 <p> Se describen los pasos requeridos para poner a funcionar el programa: </p>
 
-Ejecutar el comando  `python3 main.py`
+Ejecutar el comando  `python3 g09.py`
 
 Ejecutar el comando `predecir --prefijo <etiqueta> --poblacion <valor> --porcentaje-pruebas <valor> --knn --k <valor>` si se dedea realizar una predicción utilizando el módelo KNN.
 
